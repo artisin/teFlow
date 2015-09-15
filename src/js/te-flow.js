@@ -76,65 +76,23 @@ var TeFlow = {
     }
     return args;
   },
+  //TODO ORDER!!!!!!
   /*
   Applys any opts to val if set
    */
   applyOpts: function (value, options) {
     // debugger
     var self = this;
-    var _defaults = {
-      stream: true,
-      _start: false,
-      _end: false,
-      _res: false
-    };
-    options = self._h.defaults(options, _defaults);
-    //cylces through opts to apply
-    //applys fns to said arg through some recursion
-    var applyFn = function (arg, [firstFn, ...restFn]) {
-      // debugger
-      if (arg === undefined) {
-        return;
-      }else if (!self._h.isArr(arg)) {
-        arg = [arg];
-      }
-      return firstFn === undefined
-      ? arg
-      : applyFn(firstFn.apply(self._this, arg), restFn);
-    };
-
-    //handels apply option to value
-    var applyOpt = function (argArr, optFn) {
-      var mapApply = function (arr, fns) {
-        // debugger;
-        //memoize to avodie repeat
-        var _memApplyFn = self._h.memoize(function (a) {
-          return applyFn(a, fns);
-        });
-        var _applyFn = self._memoize ? _memApplyFn : applyFn;
-        return arr.filter(function (a) {
-          var res = _applyFn(a, fns);
-          // console.log(res)
-          // debugger
-          if (!self._h.isUdf(res) && res[0]) {
-            return res[0];
-          }
-        });
+      var setOptions = function (value, options) {
+        var _defaults = {
+          stream: true,
+          _start: false,
+          _end: false,
+          _res: false
+        };
+        return optCycle.apply(self, [value, self._h.defaults(options, _defaults)]);
       };
-      //function
-      if (self._h.isFn(optFn)) {
-        return mapApply(argArr, optFn);
-      }else if (self._h.isObj(optFn)) {
-        // debugger
-        //object
-        return mapApply(argArr, Object.keys(optFn).map(function(o) {
-          return optFn[o];
-        }));
-      }else if (self._h.isArr(optFn)) {
-        //array
-        return mapApply(argArr, optFn);
-      }
-    };
+
     //cycles through opts and invokes
     var optCycle = function (val, opts) {
       //filter out stage apply opts
@@ -156,9 +114,60 @@ var TeFlow = {
         return applyOpt(prv, self.optList[cur]);
       }, val);
     };
+
+    //handels apply option to value
+    var applyOpt = function (argArr, optFn) {
+      //function
+      if (self._h.isFn(optFn)) {
+        return mapApply(argArr, optFn);
+      }else if (self._h.isObj(optFn)) {
+        // debugger
+        //object
+        return mapApply(argArr, Object.keys(optFn).map(function(o) {
+          return optFn[o];
+        }));
+      }else if (self._h.isArr(optFn)) {
+        //array
+        return mapApply(argArr, optFn);
+      }
+    };
+
+    //cylces through opts to apply
+    //applys fns to said arg through some recursion
+    function applyFn(arg, [firstFn, ...restFn]) {
+      // debugger
+      if (arg === undefined) {
+        return;
+      }else if (!self._h.isArr(arg)) {
+        arg = [arg];
+      }
+      return firstFn === undefined
+      ? arg
+      : applyFn(firstFn.apply(self._this, arg), restFn);
+    }
+
+
+    function mapApply(arr, fns) {
+      // debugger;
+      //memoize to avodie repeat
+      var _memApplyFn = self._h.memoize(function (a) {
+        return applyFn(a, fns);
+      });
+      var _applyFn = self._memoize ? _memApplyFn : applyFn;
+      return arr.filter(function (a) {
+        var res = _applyFn(a, fns);
+        // console.log(res)
+        // debugger
+        if (!self._h.isUdf(res) && res[0]) {
+          return res[0];
+        }
+      });
+    }
+
+
     //stream opt
     return this.streamOpts.length
-           ? optCycle(value, this.streamOpts)
+           ? setOptions(value, this.streamOpts)
            : value;
   },
   /*
