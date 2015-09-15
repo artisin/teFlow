@@ -38,7 +38,7 @@ var TeFlow = {
     var car = args[0];
     var carIsObj = this._h.isFn(car) ? false : this._h.isObj(car);
     //will contain any stream opts to be applied
-    this.streamOpts = [];
+    this.streamOpt = [];
     //availible options and corresponding actions
     this.optList = {
       _flatten: this._h.flatten,
@@ -63,7 +63,7 @@ var TeFlow = {
         //if key push the be applied when the time comes
         if (car[key]) {
           //push to array ref
-          self.streamOpts.push(key);
+          self.streamOpt.push(key);
           //assign if need be
           if (self.optList[key] === null) {
             self.optList[key] = car[key];
@@ -80,61 +80,18 @@ var TeFlow = {
   /*
   Applys any opts to val if set
    */
-  applyOpts: function (value, options) {
+  applyOpts: function (valueArr, funcOpt) {
     // debugger
     var self = this;
-      var setOptions = function (value, options) {
-        var _defaults = {
-          stream: true,
-          _start: false,
-          _end: false,
-          _res: false
-        };
-        return optCycle.apply(self, [value, self._h.defaults(options, _defaults)]);
-      };
-
-    //cycles through opts and invokes
-    var optCycle = function (val, opts) {
-      //filter out stage apply opts
-      opts = opts.filter(function (opt) {
-        if (opt !== '_start' && opt !== '_res' && opt !== '_end') {
-          return opt;
-        }else if (opt === '_start' && options._start) {
-          return opt;
-        }else if (opt === '_res' && options._res) {
-          return opt;
-        }else if (opt === '_end' && options._end) {
-          return opt;
-        }
-      });
-      //Go through option list to see what needs
-      //to be applied
-      return opts.reduce(function (prv, cur) {
-        // debugger;
-        return applyOpt(prv, self.optList[cur]);
-      }, val);
-    };
-
-    //handels apply option to value
-    var applyOpt = function (argArr, optFn) {
-      //function
-      if (self._h.isFn(optFn)) {
-        return mapApply(argArr, optFn);
-      }else if (self._h.isObj(optFn)) {
-        // debugger
-        //object
-        return mapApply(argArr, Object.keys(optFn).map(function(o) {
-          return optFn[o];
-        }));
-      }else if (self._h.isArr(optFn)) {
-        //array
-        return mapApply(argArr, optFn);
-      }
-    };
-
-    //cylces through opts to apply
-    //applys fns to said arg through some recursion
-    function applyFn(arg, [firstFn, ...restFn]) {
+    /**
+     * cylces through opts to apply
+     * applys fns to said arg through some recursion
+     * @param  {arg} arg      -indv arg
+     * @param  {fn}  firstFn  -current fn
+     * @param  {arr} restFn   -rest of fn funks to be invoked
+     * @return {arr}          -arg val with appled fns
+     */
+    var applyFn = function (arg, [firstFn, ...restFn]) {
       // debugger
       if (arg === undefined) {
         return;
@@ -144,17 +101,23 @@ var TeFlow = {
       return firstFn === undefined
       ? arg
       : applyFn(firstFn.apply(self._this, arg), restFn);
-    }
+    };
 
-
-    function mapApply(arr, fns) {
+    /**
+     * Cycles through the vals and fns to apply
+     * and then invokes thoese
+     * @param  {arr} argArr - arg stream
+     * @param  {fn} fns     - funks to be appled
+     * @return {arr}        ->stream
+     */
+    var mapApply = function (argArr, fns) {
       // debugger;
       //memoize to avodie repeat
       var _memApplyFn = self._h.memoize(function (a) {
         return applyFn(a, fns);
       });
       var _applyFn = self._memoize ? _memApplyFn : applyFn;
-      return arr.filter(function (a) {
+      return argArr.filter(function (a) {
         var res = _applyFn(a, fns);
         // console.log(res)
         // debugger
@@ -162,13 +125,80 @@ var TeFlow = {
           return res[0];
         }
       });
-    }
-
-
+    };
+    //handels apply option to value
+    /**
+     * Handles and appies options to args stream vals
+     * @param  {argArr} argArr        -arg stream
+     * @param  {fn || obj} optToApply -are the fn opts to be applied
+     * @return {arr}                  ->stream
+     */
+    var applyOpt = function (argArr, optToApply) {
+      //function
+      if (self._h.isFn(optToApply)) {
+        return mapApply(argArr, optToApply);
+      }else if (self._h.isObj(optToApply)) {
+        // debugger
+        //object
+        return mapApply(argArr, Object.keys(optToApply).map(function(o) {
+          return optToApply[o];
+        }));
+      }else if (self._h.isArr(optToApply)) {
+        //array
+        return mapApply(argArr, optToApply);
+      }
+    };
+    /**
+     * Cycles through opts and invokes opts that
+     * pass through the gates
+     * @param  {arr} val       -stream value
+     * @param  {obj} fnOpt     -funk options
+     * @param  {obj} streamOpt -stream option from this.streamOpt
+     * @return {arr}           ->stream
+     */
+    var optCycle = function (valArr, fnOpt, streamOpt) {
+      //filter out stage apply opts
+      streamOpt = streamOpt.filter(function (opt) {
+        if (opt !== '_start' && opt !== '_res' && opt !== '_end') {
+          return opt;
+        }else if (opt === '_start' && fnOpt._start) {
+          return opt;
+        }else if (opt === '_res' && fnOpt._res) {
+          return opt;
+        }else if (opt === '_end' && fnOpt._end) {
+          return opt;
+        }
+      });
+      //Go through option list to see what needs
+      //to be applied
+      return streamOpt.reduce(function (prv, cur) {
+        // debugger;
+        return applyOpt(prv, self.optList[cur]);
+      }, valArr);
+    };
+    /**
+     * Sets the default gate options
+     * @param {obj} val  -the current stream value
+     * @param {obj} opts -options
+     * @return {arr}     ->stream
+     */
+    var setOptions = function (valArr, fnOpt, streamOpt) {
+      var _defaults = {
+        stream: true,
+        _start: false,
+        _end: false,
+        _res: false
+      };
+      return optCycle.apply(self, [
+        valArr,
+        self._h.defaults(fnOpt, _defaults),
+        streamOpt
+      ]);
+    };
     //stream opt
-    return this.streamOpts.length
-           ? setOptions(value, this.streamOpts)
-           : value;
+    return this.streamOpt.length
+           ? setOptions(valueArr, funcOpt, this.streamOpt)
+           : valueArr;
   },
   /*
   Processes and shit
