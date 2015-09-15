@@ -1,4 +1,4 @@
-#fFlow _function-flow_
+#teFlow _function-control-and-flow_
 A function wrapper. Docs to come, first have to finish wrighting dem `tests`.
 
 # Install
