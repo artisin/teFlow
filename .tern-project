@@ -1,0 +1,18 @@
+{
+  "libs": [
+    "browser",
+    "requirejs",
+    "jquery",
+    "ecma5",
+    "ecma6",
+    "node"
+  ],
+  "exclude": ["wordpress/**", "node_modules/**"],
+  "loadEagerly": [],
+  "plugins": {
+    "requirejs": {
+      "baseURL": "./",
+      "paths": {}
+    }
+  }
+}

@@ -1,0 +1,10 @@
+.DS_Store
+.public
+.publish
+.directory
+dist
+public
+private
+Desktop.ini
+node_modules
+app/assets/stylesheets/generated
