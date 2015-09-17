@@ -76,7 +76,6 @@ var TeFlow = {
     }
     return args;
   },
-  //TODO ORDER!!!!!!
   /*
   Applys any opts to val if set
    */
@@ -102,7 +101,6 @@ var TeFlow = {
       ? arg
       : applyFn(firstFn.apply(self._this, arg), restFn);
     };
-
     /**
      * Cycles through the vals and fns to apply
      * and then invokes thoese
