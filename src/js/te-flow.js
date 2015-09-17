@@ -13,13 +13,15 @@ var TeFlow = {
     //init precheck for options
     //set args
     this.args = [...arguments];
+    this.argsToApply = {
+      _fnArgs: []
+    };
     if (!this.count) {
       this.count = 1;
       this.args = this.checkOpts(this.args);
     }
     this.first = this.args.length ? this.args.shift() : null;
     this.rest = this.args;
-    this.argsToApply = {};
     this.firstIsFn = self._h.isFn(self.first);
     this.firstIsUdf = self._h.isUdf(self.first);
     //check for args to apply
@@ -41,6 +43,9 @@ var TeFlow = {
     this.streamOpt = [];
     //availible options and corresponding actions
     this.optList = {
+      _stream: true,
+      _objApply: true,
+      _continuous: false,
       _flatten: this._h.flatten,
       _start: null,
       _res: null,
@@ -54,8 +59,12 @@ var TeFlow = {
       //set this for ref chain
       this._this = car._this ? car._this : null;
       //Initail args
-      this.argsToApply._fnArgs = car._args ? car._args : {};
-      this.argsToApply._fnArgs = car._initArgs ? car._initArgs : {};
+      this.argsToApply._fnArgs = car._args
+                                 ? self.applyArgs(car._args)
+                                 : [];
+      this.argsToApply._fnArgs = car._initArgs
+                                 ? self.applyArgs(car._initArgs)
+                                 : [];
       //memorize - true by default
       this._memoize = car._memoize === false ? false : true;
       //cylce through opt list
@@ -182,7 +191,6 @@ var TeFlow = {
      */
     var setOptions = function (valArr, fnOpt, streamOpt) {
       var _defaults = {
-        stream: true,
         _start: false,
         _end: false,
         _res: false
@@ -198,29 +206,40 @@ var TeFlow = {
            ? setOptions(valueArr, funcOpt, this.streamOpt)
            : valueArr;
   },
+  applyArgs: function (value) {
+    debugger
+    var self = this;
+    if (value === undefined) {
+      return;
+    }
+    var pushApply = function (val) {
+      debugger
+      if (self.optList._objApply && self._h.isObj(val)) {
+        self.argsToApply._fnArgs = Object.keys(val).map(function (arg) {
+          debugger
+          return arg;
+        });
+      }else if (self.optList._continuous) {
+        self.argsToApply._fnArgs.push(val);
+      }else {
+        //??
+        val = self._h.isArr(val) ? val : [val];
+        self.argsToApply._fnArgs = val;
+      }
+    };
+    //apply res option
+    debugger
+    //pushes val for next invoke
+    pushApply(self.applyOpts(value, {_res: true}));
+    //apply end stream opts
+    self.argsToApply._fnArgs = self.applyOpts(self.argsToApply._fnArgs, {
+      _end: true
+    });
+  },
   /*
   Processes and shit
    */
   process: function () {
-    // debugger
-    var self = this;
-    var applyArgs = function (val) {
-      if (val === undefined) {
-        return;
-      }
-      //apply res opts
-      val = self.applyOpts(val, {_res: true});
-      if (!self.argsToApply._fnArgs) {
-        //create, and asssign
-        self.argsToApply._fnArgs = [val];
-      }else {
-        self.argsToApply._fnArgs.push(val);
-      }
-      //apply end stream opts
-      self.argsToApply._fnArgs = self.applyOpts(self.argsToApply._fnArgs, {
-        _end: true
-      });
-    };
     //first is func
     // debugger
     if (this.firstIsFn) {
@@ -231,7 +250,7 @@ var TeFlow = {
                   _start: true
                 }))
                 : this.first.call(this._this);
-      applyArgs(res);
+      self.applyArgs(res);
       //return
       if (Object.keys(this.argsToApply).length) {
         this.rest.push(this.argsToApply);
@@ -249,7 +268,7 @@ var TeFlow = {
       return this.first._fnArgs;
     }else if (!this.firstIsFn && !this.firstIsUdf && this.first !== null) {
       //if first non-func assume args to be applied
-      applyArgs(this.first);
+      self.applyArgs(this.first);
       if (Object.keys(this.argsToApply).length) {
         this.rest.push(this.argsToApply);
       }
