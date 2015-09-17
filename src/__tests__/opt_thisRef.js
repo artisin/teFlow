@@ -41,17 +41,22 @@ var thisTwo = function () {
     age: 'Spring Chicken'
   });
   mom.incNum();
-  return mom;
+  return {
+    mom: mom
+  };
 };
 
 
-var thisThree = function () {
+var thisThree = function (mom) {
   var dad = new beThis({
     name: 'King',
     age: 'Wisdom Has No Age'
   });
   dad.incNum();
-  return dad;
+  return {
+    mom: mom,
+    dad: dad
+  };
 };
 
 var report = function () {

@@ -29,7 +29,7 @@ var six = function () {
 
 describe('Values', function () {
   it('Should return values of all exucuted funks', function () {
-    var res = teFlow(zero, one, two('two'), three, four, five, six);
+    var res = teFlow({_flow: true}, zero, one, two('two'), three, four, five, six);
     expect(res)
     .to.eql([0, 'one', 'two', {three: 3}, true, false, ['cool', true]]);
   });

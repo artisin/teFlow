@@ -18,8 +18,11 @@ var TeFlow = {
     };
     if (!this.count) {
       this.count = 1;
-      this.args = this.checkOpts(this.args);
+      var optConfig = this.checkOpts(this.args);
+      this.args = optConfig.args;
+      this.argsToApply = optConfig.argsToApply;
     }
+    // debugger
     this.first = this.args.length ? this.args.shift() : null;
     this.rest = this.args;
     this.firstIsFn = self._h.isFn(self.first);
@@ -41,12 +44,19 @@ var TeFlow = {
     var carIsObj = this._h.isFn(car) ? false : this._h.isObj(car);
     //will contain any stream opts to be applied
     this.streamOpt = [];
+    //default helper
+    var setOptD = function (opt, def) {
+      return self._h.isUdf(car[opt]) ? def : car[opt];
+    };
     //availible options and corresponding actions
     this.optList = {
-      _stream: true,
-      _objApply: true,
-      _continuous: false,
-      _flatten: this._h.flatten,
+      _stream: setOptD('_stream', true),
+      _objApply: setOptD('_objApply', true),
+      _flow: setOptD('_flow', false)
+    };
+    //stream options
+    this.optStreamList = {
+      _flatten: self._h.flatten,
       _start: null,
       _res: null,
       _end: null
@@ -59,23 +69,22 @@ var TeFlow = {
       //set this for ref chain
       this._this = car._this ? car._this : null;
       //Initail args
-      this.argsToApply._fnArgs = car._args
-                                 ? self.applyArgs(car._args)
-                                 : [];
-      this.argsToApply._fnArgs = car._initArgs
-                                 ? self.applyArgs(car._initArgs)
-                                 : [];
+      if (car._args) {
+        self.applyArgs(car._args, true);
+      } else if (car._initArgs) {
+        self.applyArgs(car._initArgs, true);
+      }
       //memorize - true by default
       this._memoize = car._memoize === false ? false : true;
       //cylce through opt list
-      Object.keys(self.optList).forEach(function (key) {
+      Object.keys(self.optStreamList).forEach(function (key) {
         //if key push the be applied when the time comes
         if (car[key]) {
           //push to array ref
           self.streamOpt.push(key);
           //assign if need be
-          if (self.optList[key] === null) {
-            self.optList[key] = car[key];
+          if (self.optStreamList[key] === null) {
+            self.optStreamList[key] = car[key];
           }
         }
       });
@@ -83,7 +92,12 @@ var TeFlow = {
       //shift off to return
       args.shift();
     }
-    return args;
+    return {
+      args: args,
+      //not the cleanest way to handle this but
+      //oh well
+      argsToApply: self.argsToApply
+    };
   },
   /*
   Applys any opts to val if set
@@ -206,21 +220,21 @@ var TeFlow = {
            ? setOptions(valueArr, funcOpt, this.streamOpt)
            : valueArr;
   },
-  applyArgs: function (value) {
-    debugger
+  applyArgs: function (value, initRun = false) {
+    // debugger
     var self = this;
     if (value === undefined) {
       return;
     }
     var pushApply = function (val) {
-      debugger
-      if (self.optList._objApply && self._h.isObj(val)) {
-        self.argsToApply._fnArgs = Object.keys(val).map(function (arg) {
-          debugger
-          return arg;
-        });
-      }else if (self.optList._continuous) {
+      // debugger
+      if (self.optList._flow) {
         self.argsToApply._fnArgs.push(val);
+      }else if (self.optList._objApply && self._h.isObj(val)) {
+        self.argsToApply._fnArgs = Object.keys(val).map(function (key) {
+          return val[key];
+        });
+        // debugger
       }else {
         //??
         val = self._h.isArr(val) ? val : [val];
@@ -228,18 +242,24 @@ var TeFlow = {
       }
     };
     //apply res option
-    debugger
+    // debugger
     //pushes val for next invoke
-    pushApply(self.applyOpts(value, {_res: true}));
-    //apply end stream opts
-    self.argsToApply._fnArgs = self.applyOpts(self.argsToApply._fnArgs, {
-      _end: true
-    });
+    if (!initRun) {
+      pushApply(self.applyOpts(value, {_res: true}));
+      //apply end stream opts
+      self.argsToApply._fnArgs = self.applyOpts(self.argsToApply._fnArgs, {
+        _end: true
+      });
+    }else {
+      //inial run, forget about factoring options
+      pushApply(value);
+    }
   },
   /*
   Processes and shit
    */
   process: function () {
+    var self = this;
     //first is func
     // debugger
     if (this.firstIsFn) {
@@ -265,7 +285,9 @@ var TeFlow = {
              : rtn;
     }else if (self._h.isObj(this.first) && this.first._fnArgs) {
       //first is return fn obj
-      return this.first._fnArgs;
+      return this.first._fnArgs.length
+             ? this.first._fnArgs
+             : undefined;
     }else if (!this.firstIsFn && !this.firstIsUdf && this.first !== null) {
       //if first non-func assume args to be applied
       self.applyArgs(this.first);
