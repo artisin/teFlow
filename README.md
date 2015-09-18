@@ -153,11 +153,13 @@ var res = teFlow(
 
 
 ##### Specify Return
-There might be times when you would like to specify your return to a certian global variable or something of the sort. Don't you fret my friend you can do so via the passing an `object` as the last argument that has the key of `return` and then the corresponding value will be what is returned.
+There might be times when you would like to specify your return to a certian global variable or something of the sort. Don't you fret my friend you can do so via the passing an `object` as the last argument that has the key of `return` and then the corresponding value will be what is returned. The `return` can be a specified object or method.
 ```js
-//Global to be populated and returned
+//To Be returned
 var global = [];
+var staticStr = 'Static';
 var string = null;
+
 
 var one = function () {
   return 'Did you';
@@ -183,8 +185,8 @@ var three = function (twoVal) {
 var four = function (k1, k2, k3, sp) {
   global.push(k1 + sp + k2 + sp + k3);
   string += sp + k1 + sp + k2 + sp + k3;
-  //no return will return global
-  return;
+  //If passed an arg to the return method
+  return true;
 };
 
 var res = teFlow(
@@ -192,18 +194,126 @@ var res = teFlow(
     two,
     three,
     four,
+    //While this formate will return global properly
+    //it will will return string: null
+    //
+    // {
+    //   return: {
+    //     global: global,
+    //     string: string
+    //   }
+    // }
+
+    //To advoide issues I would recomend you use the
+    //return method, this also allows you to access
+    //any returned args from your last fn
     {
-      return: {
-        global: global,
-        string: string
+      return: function (cool) {
+        //cool === true
+        return {
+          static: staticStr
+          global: global,
+          string: string,
+          cool: cool
+        };
       }
     }
 );
 
 //The Return
-<!-- res = {
-  global: ["Did you say,", "you needed to", "specify your return?"],
-  string: "Did you say, you needed to specify your return?"
-}
- -->
+// res = {
+//   global: ["Did you say,", "you needed to", "specify your return?"],
+//   string: "Did you say, you needed to specify your return?",
+//   cool: true
+// }
+
+```
+
+
+##### This
+By default each fn is invoked via `fn.apply(null, [args])` so of course you have the ablity to set `this`. In addition, you can reassign `this` in you return object via the `_this` key the corresponding value will reassigned to `this`, the `_this` key pair will then be removed from the return object.
+
+```js
+//A Little Module Pattern
+var beThis = (function () {
+  var count = 0;
+  var cool = function (obj) {
+    this.name = obj.name;
+    this.getName = function () {
+      return this.name;
+    };
+    this.changeName = function (newName) {
+      this.name = newName;
+    };
+    this.returnThis = function () {
+      return this;
+    };
+    this.incNum = function () {
+      count++;
+    };
+    this.rtnNum = function() {
+      return count;
+    };
+  };
+  return cool;
+})();
+
+var addMe = function () {
+  return this.getName();
+};
+
+var changeMe = function (name) {
+  //bump shared count
+  this.incNum();
+  //change name
+  this.changeName('artisin');
+  return {
+    oldName: name,
+    newName: this.getName()
+  };
+};
+
+var addYou = function (oldName, newName) {
+  //Add
+  var you = new beThis({
+    name: 'You'
+  });
+  return {
+    //reassign this
+    _this: you,
+    me: {
+      oldName: oldName,
+      name: newName
+    },
+  };
+};
+
+
+var res = teFlow(
+  {
+    //set init this
+    _this: new beThis({
+      name: 'Te'
+    })
+  },
+  addMe,
+  changeMe,
+  addYou,
+  {
+    return: function (me) {
+      return {
+        count: this.rtnNum(),
+        myName: me.name,
+        //reassigned this from prv fn
+        yourName: this.getName()
+      };
+    }
+  }
+);
+
+// res = {
+//   count: 1,
+//   myName: 'Te',
+//   yourName: 'You'
+// }
 ```

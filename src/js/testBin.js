@@ -79,47 +79,83 @@ var teFlow = require('../../lib/te-flow');
 // 
 // 
 
-var zeroMap = function () {
-  return 0;
+//A Little Module Pattern
+var beThis = (function () {
+  var count = 0;
+  var cool = function (obj) {
+    this.name = obj.name;
+    this.getName = function () {
+      return this.name;
+    };
+    this.changeName = function (newName) {
+      this.name = newName;
+    };
+    this.returnThis = function () {
+      return this;
+    };
+    this.incNum = function () {
+      count++;
+    };
+    this.rtnNum = function() {
+      return count;
+    };
+  };
+  return cool;
+})();
+
+var addMe = function () {
+  return this.getName();
 };
 
-var oneMap = function () {
-  var args = [].slice.call(arguments);
-  var args = args.map(function (val) {
-    return val + 1;
-  });
-  args.push(1);
-  return args;
+var changeMe = function (name) {
+  //bump shared count
+  this.incNum();
+  //change name
+  this.changeName('Te');
+  return {
+    oldName: name,
+    newName: this.getName()
+  };
 };
 
-var twoMap = function () {
-  var args = [].slice.call(arguments);
-  var args = args.map(function (val) {
-    return val + 2;
+var addYou = function (oldName, newName) {
+  //Add
+  var you = new beThis({
+    name: 'You'
   });
-  args.push(2);
-  return args;
-};
-
-var threeMap = function () {
-  var args = [].slice.call(arguments);
-  var args = args.map(function (val) {
-    return val + 3;
-  });
-  args.push(3);
-  return args;
+  return {
+    //reassign this
+    _this: you,
+    me: {
+      oldName: oldName,
+      name: newName
+    },
+  };
 };
 
 
 var res = teFlow(
   {
-    _flow: true
+    //set init this
+    _this: new beThis({
+      name: 'artisin'
+    })
   },
-  zeroMap,
-  oneMap,
-  twoMap,
-  threeMap
+  addMe,
+  changeMe,
+  addYou,
+  {
+    return: function (me) {
+      return {
+        count: this.rtnNum(),
+        myName: me.name,
+        //reassigned this from prv fn
+        yourName: this.getName()
+      };
+    }
+  }
 );
+
 
 
 debugger

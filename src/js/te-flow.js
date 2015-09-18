@@ -243,7 +243,17 @@ var TeFlow = {
     // debugger
     //pushes val for next invoke
     if (!initRun) {
-      pushApply(self.applyOpts(value, {_res: true}));
+      //check to see if the user has specified a new this val
+      var thisReAssign = function (val) {
+        if (!self._h.isUdf(val) && val._this) {
+          // debugger
+          self._this = val._this;
+          //remove key
+          delete val._this;
+        }
+        return val;
+      };
+      pushApply(self.applyOpts(thisReAssign(value), {_res: true}));
       //apply end stream opts
       //check flatten stream - might be a better way to handle this but fuck it.
       self.argsToApply._fnArgs = !self.optList._flatten
@@ -279,7 +289,6 @@ var TeFlow = {
       }
       return this.init.apply(self, this.rest);
     }else if (self._h.isObj(this.first) && this.first.return) {
-      // debugger
       var rtn = this.first.return;
       //return object, if func all and return
       return this._h.isFn(rtn)
@@ -315,6 +324,9 @@ var TeFlow = {
     console.warn('teFlow ERROR: Your not supposed to get here, if you do drop me a line.');
     return undefined;
   },
+  /*
+  Helpers
+   */
   getThis: function () {
     return this;
   },
