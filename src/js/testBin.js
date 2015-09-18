@@ -79,83 +79,36 @@ var teFlow = require('../../lib/te-flow');
 // 
 // 
 
-//A Little Module Pattern
-var beThis = (function () {
-  var count = 0;
-  var cool = function (obj) {
-    this.name = obj.name;
-    this.getName = function () {
-      return this.name;
-    };
-    this.changeName = function (newName) {
-      this.name = newName;
-    };
-    this.returnThis = function () {
-      return this;
-    };
-    this.incNum = function () {
-      count++;
-    };
-    this.rtnNum = function() {
-      return count;
-    };
-  };
-  return cool;
-})();
 
-var addMe = function () {
-  return this.getName();
+var one = function () {
+  return 1;
 };
-
-var changeMe = function (name) {
-  //bump shared count
-  this.incNum();
-  //change name
-  this.changeName('Te');
-  return {
-    oldName: name,
-    newName: this.getName()
-  };
+var two = function () {
+  return 2;
 };
-
-var addYou = function (oldName, newName) {
-  //Add
-  var you = new beThis({
-    name: 'You'
-  });
-  return {
-    //reassign this
-    _this: you,
-    me: {
-      oldName: oldName,
-      name: newName
-    },
-  };
+var three = function () {
+  //no return
 };
-
+var four = function () {
+  debugger
+  return 4;
+};
 
 var res = teFlow(
-  {
-    //set init this
-    _this: new beThis({
-      name: 'artisin'
-    })
-  },
-  addMe,
-  changeMe,
-  addYou,
-  {
-    return: function (me) {
-      return {
-        count: this.rtnNum(),
-        myName: me.name,
-        //reassigned this from prv fn
-        yourName: this.getName()
-      };
-    }
-  }
+    {
+      _end: {
+        one: function () {
+          debugger
+        }
+      }
+    },
+    one,
+    two,
+    three,
+    four
 );
 
+// res === [1, 2, 4];
 
 
 debugger
