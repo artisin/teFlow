@@ -3,20 +3,21 @@
 
 A function wrapper to help you orginize your code in cleaner functional manner. I typically use a promise library to structor my code base like [ASQ](https://github.com/getify/asynquence) but when I'm unable to do so I wanted to still maintain a clean functional manner. In a nut-shell teFlow creates an argument stream to through `apply` to pass. 
 
-# Install
+# Usage
+## Install
 
 ```
 npm install te.flow --save-dev
 ```
 
-# Use
+## Use
 ```
 var teFlow = require('te-flow');
 ```
-### _Alternative_ 
+_Alternative_ 
 Download the file `teflow.js` in the `lib` folder and drop it into your projcet.
 
-# Test
+## Test
 ```
 gulp test
 ```
