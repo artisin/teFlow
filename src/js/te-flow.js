@@ -69,10 +69,25 @@ var TeFlow = {
       //set this for ref chain
       this._this = car._this ? car._this : null;
       //Initail args
+      //helper to invoke args if methods
+      var invokeArgs = function (initArgs) {
+        //args in method
+        if (self._h.isFn(initArgs)) {
+          return initArgs();
+        }
+        //assume args is obj
+        return Object.keys(initArgs).reduce(function (prv, cur) {
+          var curArg = initArgs[cur];
+          prv[cur] = !self._h.isFn(curArg)
+                     ? initArgs[cur]
+                     : curArg();
+          return prv;
+        }, {});
+      };
       if (car._args) {
-        self.applyArgs(car._args, true);
+        self.applyArgs(invokeArgs(car._args), true);
       } else if (car._initArgs) {
-        self.applyArgs(car._initArgs, true);
+        self.applyArgs(invokeArgs(car._initArgs), true);
       }
       //memorize - true by default
       this._memoize = car._memoize === false ? false : true;
@@ -243,7 +258,6 @@ var TeFlow = {
       //check to see if the user has specified a new this val
       var thisReAssign = function (val) {
         if (!self._h.isUdf(val) && val._this) {
-          // debugger
           self._this = val._this;
           //remove key
           delete val._this;
@@ -254,8 +268,8 @@ var TeFlow = {
       pushApply((function () {
         //need to send val as an array to have opts applied
         if (!self._h.isArr(value)) {
-          value = [value];
-          var res = self.applyOpts(thisReAssign(value), {_res: true});
+          value = [thisReAssign(value)];
+          var res = self.applyOpts(value, {_res: true});
           return res[0];
         }
         return self.applyOpts(thisReAssign(value), {_res: true});
