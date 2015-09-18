@@ -6,8 +6,6 @@
   "author": "artisin",
   "license": "MIT",
   "scripts": {
-    "compile": "babel src/teflow.js --out-file lib/teflow-compiled.js",
-    "prepublish": "npm run compile",
     "test": "gulp test"
   },
   "keywords": [
