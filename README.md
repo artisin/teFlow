@@ -7,7 +7,7 @@ A function wrapper to help you orginize your code in cleaner functional manner. 
 ### Install
 
 ```
-npm install te.flow --save-dev
+npm install te-flow --save-dev
 ```
 
 ### Use
@@ -40,10 +40,10 @@ var res = teFlow(
 );
 ```
 
-### Options - [`obj`]
+### Options || Type: `obj`
 + `_args` or `_initArgs` - [Type:`obj` Default: `null`]
     * Sets the inital arguments which will be passed to the first fn call.
-+ `_this` - [Type: `obj` Default: `null`]
++ `_this` || Type: `obj` Default: `null`
     * Sets the value of `this` that will be applied to your fns otherwise the fn will be applied with null ex:`fn.apply(null, [args])`
 + `_objApply` - [Type:`boolean` Default: `true`]
     * Allows you to just return an `object` whose values will then be mapped and passed onto the next function instead of having to return the `arguments` obj to pass said arguments. 
