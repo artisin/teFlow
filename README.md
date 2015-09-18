@@ -3,27 +3,27 @@
 
 A function wrapper to help you orginize your code in cleaner functional manner. I typically use a promise library to structor my code base like [ASQ](https://github.com/getify/asynquence) but when I'm unable to do so I wanted to still maintain a clean functional manner. In a nut-shell teFlow creates an argument stream to through `apply` to pass. 
 
-# Usage
-## Install
+## Usage
+### Install
 
 ```
 npm install te.flow --save-dev
 ```
 
-## Use
+### Use
 ```
 var teFlow = require('te-flow');
 ```
 _Alternative_ 
-Download the file `teflow.js` in the `lib` folder and drop it into your projcet.
+Download the file `te-flow_browsers.js` in the `lib` folder and drop it into your projcet.
 
-## Test
+### Test
 ```
 gulp test
 ```
 
-# Api
-## About
+## Api
+### About
 In a nut-shell te-flow is a helper function wrapper that creates an argument steam though `apply` becuase ain't nobody want to 
 
 ```js
@@ -40,7 +40,7 @@ var res = teFlow(
 );
 ```
 
-## Options - [`obj`]
+### Options - [`obj`]
 + `_args` or `_initArgs` - [Type:`obj` Default: `null`]
     * Sets the inital arguments which will be passed to the first fn call.
 + `_this` - [Type: `obj` Default: `null`]
@@ -55,7 +55,7 @@ var res = teFlow(
     * `_res`
     * `_flatten`
 
-### Setting The Options
+#### Setting The Options
 Options are passed as an `object` as the first argument to `teFlow`.
 ```js
 var res = teFlow({
@@ -71,7 +71,7 @@ var res = teFlow({
 ```
 
 
-## Examples
+### Examples
 
 #### Fn. List
 The basic concept here is each function will be called and then the return of the called function is passed onto the next function.
