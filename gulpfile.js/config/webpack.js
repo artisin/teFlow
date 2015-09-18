@@ -64,11 +64,24 @@ module.exports = function(env) {
     entry: './src/js/te-flow.js',
     output: {
       path: jsDest,
-      filename: 'te-flow_browser.js',
+      filename: 'te-flow.browser.js',
       library: 'teFlow',
       libraryTarget: 'umd'
     }
   });
+  var frontendComp = config(deepmerge(frontend, {
+    output: {
+      filename: 'te-flow.browser.compressed.js'
+    },
+    plugins: [
+      new webpack.optimize.UglifyJsPlugin({
+        minimize: true,
+        mangle: {
+          except: ['$super', '$', 'exports', 'require']
+        }
+      })
+    ]
+  }));
 
   /*
   Back End Config
@@ -81,6 +94,7 @@ module.exports = function(env) {
     .forEach(function(mod) {
       nodeModules[mod] = 'commonjs ' + mod;
     });
+
   var backend = config({
     entry: './src/js/te-flow.js',
     target: 'node',
@@ -96,11 +110,25 @@ module.exports = function(env) {
     },
     externals: nodeModules
   });
-
+  var backendComp = config(deepmerge(backend, {
+    output: {
+      filename: 'te-flow.compressed.js'
+    },
+    plugins: [
+      new webpack.optimize.UglifyJsPlugin({
+        minimize: true,
+        mangle: {
+          except: ['$super', '$', 'exports', 'require']
+        }
+      })
+    ]
+  }));
 
   return {
     backend: backend,
+    backendComp: backendComp,
     frontend: frontend,
+    frontendComp: frontendComp,
     testbin: testBin
   };
 };
