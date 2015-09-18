@@ -24,6 +24,11 @@ Download the `te-flow.js` or `te-flow.browsers.js` file depending on your use in
 ###### _Compressed Files_
 I recommend you use webpack to manage your Js assets but if you wish I understand this is sometimes not an option so in the lib folder I have also included compressed and non-webpacked files as well. 
 
+### Development
+```
+gulp
+```
+
 ### Test
 ```
 gulp test
