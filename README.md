@@ -37,7 +37,7 @@ gulp test
 
 ## Api
 ### About
-In a nutshell te-flow is a helper function wrapper that creates an argument steam though `apply` because ain't nobody like 
+In a nutshell te-flow is a helper function wrapper that creates an argument steam though `apply` because ain't nobody like doing that by hand.
 
 
 ```js
