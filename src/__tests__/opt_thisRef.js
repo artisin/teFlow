@@ -31,7 +31,8 @@ var beThis = (function () {
 
 var thisOne = function () {
   this.incNum();
-  console.log('My Name: ' + this.clInfo('name'));
+  var name = this.clInfo('name');
+  console.log('My Name: ' + name);
 };
 
 var thisTwo = function () {
