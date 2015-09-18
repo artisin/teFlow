@@ -41,13 +41,13 @@ var res = teFlow(
 ```
 
 ### Options || Type: `obj`
-+ `_args` or `_initArgs` - [Type:`obj` Default: `null`]
++ `_args` or `_initArgs` || Type:`obj` Default: `null`
     * Sets the inital arguments which will be passed to the first fn call.
 + `_this` || Type: `obj` Default: `null`
     * Sets the value of `this` that will be applied to your fns otherwise the fn will be applied with null ex:`fn.apply(null, [args])`
-+ `_objApply` - [Type:`boolean` Default: `true`]
++ `_objApply` || Type:`boolean` Default: `true`
     * Allows you to just return an `object` whose values will then be mapped and passed onto the next function instead of having to return the `arguments` obj to pass said arguments. 
-+ `_flow` [Type:`boolean` Default: `false`]
++ `_flow` || Type:`boolean` Default: `false`
     * An intresting option. Bascially, with this option turned on every fn return is pushed into your argument stream or queue or whatever you want to call it. 
 + Control
     * `_start`
