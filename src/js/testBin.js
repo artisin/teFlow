@@ -80,42 +80,104 @@ var teFlow = require('../../lib/te-flow');
 // 
 
 
-var one = function () {
-  return 1;
-};
-var two = function () {
-  return 2;
-};
-var three = function () {
-  return 'three';
-};
-var four = function () {
-  return 4;
-};
+// var one = function () {
+//   return arguments;
+// };
 
-var res = teFlow(
-    {
-      _flow: true,
-      _res: {
-        //only return numbers
-        isNum: function (arg) {
-          if (typeof arg === 'number') {
-            return arg;
-          }
-        },
-        //add one to num
-        addOne: function (arg) {
-          return arg + 1;
-        }
-      }
-    },
-    one,
-    two,
-    three,
-    four
-);
+
+// var res = teFlow(
+//     {
+//       _args: function () {
+//         return {
+//           one: 1,
+//           two: 2,
+//           three: 'three'
+//         }
+//       }
+//     },
+//     one
+// );
 
 // res === [1, 2, 4];
 
+
+
+//A Little Module Pattern
+var beThis = (function () {
+  var count = 0;
+  var cool = function (obj) {
+    this.name = obj.name;
+    this.getName = function () {
+      return this.name;
+    };
+    this.changeName = function (newName) {
+      this.name = newName;
+    };
+    this.returnThis = function () {
+      return this;
+    };
+    this.incNum = function () {
+      count++;
+    };
+    this.rtnNum = function() {
+      return count;
+    };
+  };
+  return cool;
+})();
+
+var addMe = function () {
+  return this.getName();
+};
+
+var changeMe = function (name) {
+  //bump shared count
+  this.incNum();
+  //change name
+  this.changeName('Te');
+  return {
+    oldName: name,
+    newName: this.getName()
+  };
+};
+
+var addYou = function (oldName, newName) {
+  //Add
+  var you = new beThis({
+    name: 'You'
+  });
+  return {
+    //reassign this
+    _this: you,
+    me: {
+      oldName: oldName,
+      name: newName
+    },
+  };
+};
+
+
+var res = teFlow(
+    {
+      //set init this
+      _this: new beThis({
+        name: '</artisin>'
+      })
+    },
+    addMe,
+    changeMe,
+    addYou,
+    {
+      return: function (me) {
+        debugger
+        return {
+          count: this.rtnNum(),
+          myName: me.name,
+          //reassigned this from prv fn
+          yourName: this.getName()
+        };
+      }
+    }
+);
 
 debugger

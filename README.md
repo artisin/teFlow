@@ -162,7 +162,6 @@ var addOne = function (oneVal, twoval, threeVal) {
   };
 };
 
-
 var res = teFlow(
     one,
     two,
@@ -180,7 +179,6 @@ There might be times when you would like to specify your return to a certain glo
 var global = [];
 var staticStr = 'Static';
 var string = null;
-
 
 var one = function () {
   return 'Did you';
@@ -287,7 +285,7 @@ var changeMe = function (name) {
   //bump shared count
   this.incNum();
   //change name
-  this.changeName('artisin');
+  this.changeName('Te');
   return {
     oldName: name,
     newName: this.getName()
@@ -309,12 +307,11 @@ var addYou = function (oldName, newName) {
   };
 };
 
-
 var res = teFlow(
     {
       //set init this
       _this: new beThis({
-        name: 'Te'
+        name: '</artisin>'
       })
     },
     addMe,
@@ -322,6 +319,7 @@ var res = teFlow(
     addYou,
     {
       return: function (me) {
+        debugger
         return {
           count: this.rtnNum(),
           myName: me.name,
