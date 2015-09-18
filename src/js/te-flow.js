@@ -152,25 +152,17 @@ var TeFlow = {
      */
     var applyOpt = function (argArr, optToApply) {
       // debugger
-      //filters out undefined results
-      var filterOutUdf = function (resArry) {
-        return resArry.filter(function (val) {
-          if (!self._h.isUdf(val)) {
-            return val;
-          }
-        });
-      };
       //function
       if (self._h.isFn(optToApply)) {
-        return filterOutUdf(mapApply(argArr, optToApply));
+        return mapApply(argArr, optToApply);
       }else if (self._h.isObj(optToApply)) {
         //object
-        return filterOutUdf(mapApply(argArr, Object.keys(optToApply).map(function(opt) {
+        return mapApply(argArr, Object.keys(optToApply).map(function(opt) {
           return optToApply[opt];
-        })));
+        }));
       }else if (self._h.isArr(optToApply)) {
         //array
-        return filterOutUdf(mapApply(argArr, optToApply));
+        return mapApply(argArr, optToApply);
       }
     };
     /**
@@ -181,7 +173,7 @@ var TeFlow = {
      * @param  {obj} streamOpt -stream option from this.streamOpt
      * @return {arr}           ->stream
      */
-    var optCycle = function (valArr, fnOpt, streamOpt) {
+    var optCycle = function (argArr, fnOpt, streamOpt) {
       //filter out stage apply opts
       streamOpt = streamOpt.filter(function (opt) {
         if (opt !== '_start' && opt !== '_res' && opt !== '_end') {
@@ -198,7 +190,7 @@ var TeFlow = {
       //to be applied
       return streamOpt.reduce(function (prv, cur) {
         return applyOpt(prv, self.optStreamList[cur]);
-      }, valArr);
+      }, argArr);
     };
     /**
      * Sets the default gate options
@@ -220,7 +212,7 @@ var TeFlow = {
     };
 
     //stream opt
-    return this.streamOpt.length && valueArr.length
+    return this.streamOpt.length
            ? setOptions(valueArr, funcOpt, this.streamOpt)
            : valueArr;
   },
@@ -258,7 +250,16 @@ var TeFlow = {
         }
         return val;
       };
-      pushApply(self.applyOpts(thisReAssign(value), {_res: true}));
+      //res push
+      pushApply((function () {
+        //need to send val as an array to have opts applied
+        if (!self._h.isArr(value)) {
+          value = [value];
+          var res = self.applyOpts(thisReAssign(value), {_res: true});
+          return res[0];
+        }
+        return self.applyOpts(thisReAssign(value), {_res: true});
+      })());
       //apply end stream opts
       //check flatten stream - might be a better way to handle this but fuck it.
       self.argsToApply._fnArgs = !self.optList._flatten
@@ -278,7 +279,6 @@ var TeFlow = {
   process: function () {
     var self = this;
     //first is func
-    // debugger
     if (this.firstIsFn) {
       var res = Object.keys(this.argsToApply).length
                 ? this.first.apply(this._this, self.applyOpts(this.argsToApply._fnArgs, {
