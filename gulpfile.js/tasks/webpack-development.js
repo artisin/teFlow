@@ -67,7 +67,7 @@ gulp.task('run', ['backend-watch', 'frontend-watch', 'testbin-watch', 'browser-s
     execMap: {
       js: 'node'
     },
-    script: path.join(jsDest, '/te-flow-node'),
+    script: path.join(jsDest, '/te-flow'),
     ignore: ['*'],
     ext: 'noop'
   }).on('restart', function() {

@@ -9,7 +9,7 @@ module.exports = {
     config.sourceAssets + '__tests__/**/*.js',
   ],
   preprocessors: {
-    'src/__tests__/*': ['webpack', 'sourcemap'],
+    'src/__tests__/**/*': ['webpack', 'sourcemap'],
   },
   webpack: webpackConfig,
   //Bumped up to comp for buttron complie time

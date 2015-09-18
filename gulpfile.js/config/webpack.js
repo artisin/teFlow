@@ -64,7 +64,7 @@ module.exports = function(env) {
     entry: './src/js/te-flow.js',
     output: {
       path: jsDest,
-      filename: 'teflow.js',
+      filename: 'te-flow_browser.js',
       library: 'teFlow',
       libraryTarget: 'umd'
     }
@@ -86,7 +86,7 @@ module.exports = function(env) {
     target: 'node',
     output: {
       path: jsDest,
-      filename: 'teflow-node.js',
+      filename: 'te-flow.js',
       library: 'teFlow',
       libraryTarget: 'umd'
     },
@@ -94,13 +94,7 @@ module.exports = function(env) {
       __dirname: true,
       __filename: true
     },
-    externals: nodeModules,
-    // plugins: [
-    //   new webpack.BannerPlugin('require("source-map-support").install();', {
-    //     raw: true,
-    //     entryOnly: false
-    //   })
-    // ]
+    externals: nodeModules
   });
 
 

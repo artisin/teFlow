@@ -32,6 +32,7 @@ gulp.task('testComplete', function() {
 
 gulp.task('test', function(cb) {
   gulpSequence(
+    'build',
     'testRunner',
     'testComplete',
     cb);
