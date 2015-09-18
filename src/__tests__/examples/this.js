@@ -1,76 +1,89 @@
 var expect = require('expect.js');
 var teFlow = require('../../../lib/te-flow.js');
 
-var global = [];
-var string = null;
-var staticStr = 'Static';
+//A Little Module Pattern
+var beThis = (function () {
+  var count = 0;
+  var cool = function (obj) {
+    this.name = obj.name;
+    this.getName = function () {
+      return this.name;
+    };
+    this.changeName = function (newName) {
+      this.name = newName;
+    };
+    this.returnThis = function () {
+      return this;
+    };
+    this.incNum = function () {
+      count++;
+    };
+    this.rtnNum = function() {
+      return count;
+    };
+  };
+  return cool;
+})();
 
-var one = function () {
-  return 'Did you';
+var addMe = function () {
+  return this.getName();
 };
 
-var two = function (oneVal) {
-  global.push(oneVal + ' say,');
-  string = oneVal + ' say, ';
-  return 'you';
-};
-
-var three = function (twoVal) {
-  global.push(twoVal + ' needed to');
-  string += twoVal + ' needed to';
+var changeMe = function (name) {
+  //bump shared count
+  this.incNum();
+  //change name
+  this.changeName('artisin');
   return {
-    key1: 'specify',
-    key2: 'your',
-    key3: 'return?',
-    space: ' '
+    oldName: name,
+    newName: this.getName()
   };
 };
 
-var four = function (k1, k2, k3, sp) {
-  global.push(k1 + sp + k2 + sp + k3);
-  string += sp + k1 + sp + k2 + sp + k3;
-  //will be passed to return fn
-  return true;
+var addYou = function (oldName, newName) {
+  //Add
+  var you = new beThis({
+    name: 'You'
+  });
+  return {
+    //reassign this
+    _this: you,
+    me: {
+      oldName: oldName,
+      name: newName
+    },
+  };
 };
+
 
 
 describe('Example', function () {
   it('Should return expected example val', function () {
     var res = teFlow(
-        one,
-        two,
-        three,
-        four,
-        //While this formate will return global properly
-        //it will will return string: null
-        //
-        // {
-        //   return: {
-        //     global: global,
-        //     string: string
-        //   }
-        // }
-
-        //To advoide issues I would recomend you use the
-        //return method, this also allows you to access
-        //any returned args from your last fn
-        {
-          return: function (cool) {
-            //cool === true
-            return {
-              static: staticStr,
-              global: global,
-              string: string,
-              cool: cool
-            };
-          }
+      {
+        //set init this
+        _this: new beThis({
+          name: 'Te'
+        })
+      },
+      addMe,
+      changeMe,
+      addYou,
+      {
+        return: function (me) {
+          return {
+            count: this.rtnNum(),
+            myName: me.name,
+            //reassigned this from prv fn
+            yourName: this.getName()
+          };
         }
+      }
     );
     expect(res).to.eql({
-      static: "Static",
-      global: ["Did you say,", "you needed to", "specify your return?"],
-      string: "Did you say, you needed to specify your return?",
-      cool: true
+      count: 1,
+      myName: 'Te',
+      yourName: 'You'
     });
   });
 });
