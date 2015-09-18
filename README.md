@@ -56,22 +56,25 @@ var res = teFlow(
 
 ### Options || Type: `obj`
 + `_args` or `_initArgs` || Type:`obj` Default: `null`
-    * Sets the initial arguments which will be passed to the first fn call.
+  * Sets the initial arguments which will be passed to the first fn call.
 + `_this` || Type: `obj` Default: `null`
-    * Sets the value of `this` that will be applied to your fns otherwise the fn will be applied with null ex:`fn.apply(null, [args])`
+  * Sets the value of `this` that will be applied to your fns otherwise the fn will be applied with null ex:`fn.apply(null, [args])`
 + `_objApply` || Type:`boolean` Default: `true`
-    * Allows you to just return an `object` whose values will then be mapped and passed onto the next function instead of having to return the `arguments` obj to pass said arguments. 
+  * Allows you to just return an `object` whose values will then be mapped and passed onto the next function instead of having to return the `arguments` obj to pass said arguments. 
 + `_flow` || Type:`boolean` Default:`false`
-    * An interesting option. Basically, with this option turned on every fn return is pushed into your argument stream or queue or whatever you want to call it.
-    * `_flatten` || Type:`boolean` Default:`false`
+  * An interesting option. Basically, with this option turned on every fn return is pushed into your argument stream or queue or whatever you want to call it.
+  * `_flatten` || Type:`boolean` Default:`false`
       - Flattens any sub arrays in stream.
 + Control
-    * `_start`
-      - Arguments before applied to function.
-    * `_end`
-      - Arguments after applied to function.
-    * `_res`
-      - The value that is returned from function.
+  * These conrol helpers will be inkoved every start, end, or result of the current function. The functions will be applied in order mapping out the input arguments. For example if your end arguments look something like this `[1, 2, 3]` and you had two function it do the following: `fn1(arg[0])`, `fn2(arg[0])`, `fn1(arg[1])`, `fn2(arg[1])`, ect.
+  + `_start` || Type:`object` (method fns)
+    * Arguments before applied to function.
+  + `_end` || Type:`object` (method fns)
+    * Arguments after applied to function.
+  + `_res` || Type:`object` (method fns)
+    * The value that is returned from function.
+  + `_memoize` || Type:`boolean` Default: `true`
+    * Uses lodash memoize to reduce the overhead.
 
 #### Setting The Options
 Options are passed as an `object` as the first argument to `teFlow`.
