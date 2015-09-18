@@ -420,3 +420,8 @@ var res = teFlow(
 );
 // res === [1, 2, 4];
 ```
+
+
+
+##### Control
+_Docs coming soon._
