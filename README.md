@@ -55,7 +55,7 @@ var res = teFlow(
 ```
 
 ### Options || Type: `obj`
-+ `_args` or `_initArgs` || Type:`obj` Default: `null`
++ `_args` or `_initArgs` || Type:`obj`, `method`, `obj w/methods` Default: `null`
   * Sets the initial arguments which will be passed to the first fn call.
 + `_this` || Type: `obj` Default: `null`
   * Sets the value of `this` that will be applied to your fns otherwise the fn will be applied with null ex:`fn.apply(null, [args])`
@@ -93,6 +93,62 @@ var res = teFlow({
 
 
 ## Examples
+
+##### Arg Option
+The arg option allows you to set the inital arguments that are to be sent to the first function and you can do this using the following.
+```js
+//All methods will produce the same arguments
+var fn1 = function (one, two, three) {
+  //one === 1
+  //two === true
+  //three === 'three'
+};
+
+//Object
+teFlow(
+  {
+    _args: {
+      one: 1,
+      two: true,
+      three: 'three'
+    }
+  },
+  fn1
+);
+
+//Method
+teFlow(
+  {
+    _args: function () {
+      return {
+        one: 1,
+        two: true,
+        three: 'three'
+      }
+    }
+  },
+  f1
+);
+
+//Object with methods
+teFlow(
+  {
+    _args: {
+      one: function () {
+        return 1;
+      },
+      two: function () {
+        return true;
+      },
+      three: function () {
+        return 'three';
+      }
+    }
+  },
+  fn1
+);
+
+```
 
 ##### Fn. List
 The basic concept here is each function will be called and then the return of the called function is passed onto the next function.
