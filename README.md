@@ -1,5 +1,6 @@
 # teFlow _function-control-and-flow_
 [![Build Status](https://travis-ci.org/artisin/gulpFast.svg?branch=master)](https://travis-ci.org/artisin/te-Flow)
+
 A function wrapper to help you orginize your code in cleaner functional manner. I typically use a promise library to structor my code base like (ASQ)[https://github.com/getify/asynquence] but when I'm unable to do so I wanted to still maintain a clean functional manner. In a nut-shell teFlow creates an argument stream to through `apply` to pass. 
 
 # Install
