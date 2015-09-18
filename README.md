@@ -74,7 +74,7 @@ var res = teFlow(
   + `_res` || Type:`object` (method fns)
     * The value that is returned from function.
   + `_memoize` || Type:`boolean` Default: `true`
-    * Uses lodash memoize to reduce the overhead.
+    * Uses lodash memoize to reduce overhead.
 
 #### Setting The Options
 Options are passed as an `object` as the first argument to `teFlow`.
