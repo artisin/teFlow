@@ -1,7 +1,12 @@
 # teFlow _function-control-and-flow_
 [![Build Status](https://travis-ci.org/artisin/gulpFast.svg?branch=master)](https://travis-ci.org/artisin/te-Flow)
 
-A function wrapper to help you orginize your code in cleaner functional manner. I typically use a promise library to structor my code base like [ASQ](https://github.com/getify/asynquence) but when I'm unable to do so I wanted to still maintain a clean functional manner. In a nut-shell teFlow creates an argument stream to through `apply` to pass. 
+A function wrapper to help you organize your code in cleaner functional manner. I typically use a promise library to structor my code base like [ASQ](https://github.com/getify/asynquence) but when I'm unable to do so I wanted to still maintain a clean functional manner. In a nutshell teFlow creates an argument stream to through `apply` to pass. 
+
+
+## Note
+I created this package for a current project I'm currently working on. With that said, I would hold your horses until I run this guy through the battlefield because the Api might change a bit before I release a 1.x. ~1-2 months tops. 
+
 
 ## Usage
 ### Install
@@ -24,7 +29,8 @@ gulp test
 
 ## Api
 ### About
-In a nut-shell te-flow is a helper function wrapper that creates an argument steam though `apply` becuase ain't nobody want to 
+In a nutshell te-flow is a helper function wrapper that creates an argument steam though `apply` because ain't nobody like 
+
 
 ```js
 //The typical way
@@ -32,7 +38,8 @@ var res1 = one();
 var res2 = two.apply(null, res1);
 var res3 = three.apply(null, res2);
 
-//The te-flow way
+var teFlow = require('te-flow');
+//The teFlow way
 var res = teFlow(
     one,
     two,
@@ -42,18 +49,22 @@ var res = teFlow(
 
 ### Options || Type: `obj`
 + `_args` or `_initArgs` || Type:`obj` Default: `null`
-    * Sets the inital arguments which will be passed to the first fn call.
+    * Sets the initial arguments which will be passed to the first fn call.
 + `_this` || Type: `obj` Default: `null`
     * Sets the value of `this` that will be applied to your fns otherwise the fn will be applied with null ex:`fn.apply(null, [args])`
 + `_objApply` || Type:`boolean` Default: `true`
     * Allows you to just return an `object` whose values will then be mapped and passed onto the next function instead of having to return the `arguments` obj to pass said arguments. 
-+ `_flow` || Type:`boolean` Default: `false`
-    * An intresting option. Bascially, with this option turned on every fn return is pushed into your argument stream or queue or whatever you want to call it. 
++ `_flow` || Type:`boolean` Default:`false`
+    * An interesting option. Basically, with this option turned on every fn return is pushed into your argument stream or queue or whatever you want to call it.
+    * `_flatten` || Type:`boolean` Default:`false`
+      - Flattens any sub arrays in stream.
 + Control
     * `_start`
+      - Arguments before applied to function.
     * `_end`
+      - Arguments after applied to function.
     * `_res`
-    * `_flatten`
+      - The value that is returned from function.
 
 #### Setting The Options
 Options are passed as an `object` as the first argument to `teFlow`.
@@ -93,17 +104,17 @@ var three = function (twoVal) {
 };
 
 var res = teFlow(
-  one,
-  two,
-  //res === return or three fn.
-  three
+    one,
+    two,
+    //res === return or three fn.
+    three
 );
 //res === 3
 ```
 
 
 ##### Obj Return || `_objApply` option
-By default the `_objApply` option is turned __on__ to help you better orginize and or visulize what your are passing onto the next function. That being said, if you where to return a non object it will reset the argument stream to that value.
+By default the `_objApply` option is turned __on__ to help you better organize and or visualize what your are passing onto the next function. That being said, if you were to return a non object it will reset the argument stream to that value. 
 ```js
 var one = function () {
   return 1;
@@ -143,17 +154,17 @@ var addOne = function (oneVal, twoval, threeVal) {
 
 
 var res = teFlow(
-  one,
-  two,
-  three,
-  addOne
+    one,
+    two,
+    three,
+    addOne
 );
 //res === [2, 3, 4]
 ```
 
 
 ##### Specify Return
-There might be times when you would like to specify your return to a certian global variable or something of the sort. Don't you fret my friend you can do so via the passing an `object` as the last argument that has the key of `return` and then the corresponding value will be what is returned. The `return` can be a specified object or method.
+There might be times when you would like to specify your return to a certain global variable or something of the sort. Don't you fret my friend you can do so via the passing an `object` as the last argument that has the key of `return` and then the corresponding value will be what is returned. The `return` can be a specified object or method.
 ```js
 //To Be returned
 var global = [];
@@ -204,7 +215,7 @@ var res = teFlow(
     //   }
     // }
 
-    //To advoide issues I would recomend you use the
+    //To avoid issues I would recommend you use the
     //return method, this also allows you to access
     //any returned args from your last fn
     {
@@ -231,7 +242,7 @@ var res = teFlow(
 
 
 ##### This
-By default each fn is invoked via `fn.apply(null, [args])` so of course you have the ablity to set `this`. In addition, you can reassign `this` in you return object via the `_this` key the corresponding value will reassigned to `this`, the `_this` key pair will then be removed from the return object.
+By default each fn is invoked via `fn.apply(null, [args])` so of course you have the ability to set `this`. In addition, you can reassign `this` in you return object via the `_this` key the corresponding value will reassigned to `this`, the `_this` key pair will then be removed from the return object. 
 
 ```js
 //A Little Module Pattern
@@ -290,25 +301,25 @@ var addYou = function (oldName, newName) {
 
 
 var res = teFlow(
-  {
-    //set init this
-    _this: new beThis({
-      name: 'Te'
-    })
-  },
-  addMe,
-  changeMe,
-  addYou,
-  {
-    return: function (me) {
-      return {
-        count: this.rtnNum(),
-        myName: me.name,
-        //reassigned this from prv fn
-        yourName: this.getName()
-      };
+    {
+      //set init this
+      _this: new beThis({
+        name: 'Te'
+      })
+    },
+    addMe,
+    changeMe,
+    addYou,
+    {
+      return: function (me) {
+        return {
+          count: this.rtnNum(),
+          myName: me.name,
+          //reassigned this from prv fn
+          yourName: this.getName()
+        };
+      }
     }
-  }
 );
 
 // res = {
@@ -316,4 +327,32 @@ var res = teFlow(
 //   myName: 'Te',
 //   yourName: 'You'
 // }
+```
+
+##### Flow
+With this option set to true every return will be added to single return array. Additionally, you can pass `_flatten: true` which will flatten any sub-arrays that are returned. 
+```js
+var one = function () {
+  return 1;
+};
+var two = function () {
+  return 2;
+};
+var three = function () {
+  //no return
+};
+var four = function () {
+  return 4;
+};
+
+var res = teFlow(
+    {
+      _flow: true
+    },
+    one,
+    two,
+    three,
+    four
+);
+// res === [1, 2, 4];
 ```
