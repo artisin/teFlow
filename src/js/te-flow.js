@@ -52,11 +52,11 @@ var TeFlow = {
     this.optList = {
       _stream: setOptD('_stream', true),
       _objApply: setOptD('_objApply', true),
-      _flow: setOptD('_flow', false)
+      _flow: setOptD('_flow', false),
+      _flatten: setOptD('_flatten', false)
     };
     //stream options
     this.optStreamList = {
-      _flatten: self._h.flatten,
       _start: null,
       _res: null,
       _end: null
@@ -103,7 +103,6 @@ var TeFlow = {
   Applys any opts to val if set
    */
   applyOpts: function (valueArr, funcOpt) {
-    // debugger
     var self = this;
     /**
      * cylces through opts to apply
@@ -221,22 +220,21 @@ var TeFlow = {
            : valueArr;
   },
   applyArgs: function (value, initRun = false) {
-    // debugger
     var self = this;
     if (value === undefined) {
       return;
     }
     var pushApply = function (val) {
-      // debugger
       if (self.optList._flow) {
+        //Flow push
         self.argsToApply._fnArgs.push(val);
       }else if (self.optList._objApply && self._h.isObj(val)) {
+        //Object assign
         self.argsToApply._fnArgs = Object.keys(val).map(function (key) {
           return val[key];
         });
-        // debugger
       }else {
-        //??
+        //Reassign Stream
         val = self._h.isArr(val) ? val : [val];
         self.argsToApply._fnArgs = val;
       }
@@ -247,6 +245,10 @@ var TeFlow = {
     if (!initRun) {
       pushApply(self.applyOpts(value, {_res: true}));
       //apply end stream opts
+      //check flatten stream - might be a better way to handle this but fuck it.
+      self.argsToApply._fnArgs = !self.optList._flatten
+                                 ? self.argsToApply._fnArgs
+                                 : self._h.flatten(self.argsToApply._fnArgs);
       self.argsToApply._fnArgs = self.applyOpts(self.argsToApply._fnArgs, {
         _end: true
       });
