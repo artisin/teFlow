@@ -14,7 +14,7 @@ var four = function () {
   return 4;
 };
 
-describe('Control - _start', function () {
+describe('Control - _end', function () {
   it('Should return array and everytime a val passes through it adds one', function () {
     var res = teFlow(
         {

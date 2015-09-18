@@ -35,7 +35,7 @@ var four = function (k1, k2, k3, sp) {
 
 
 describe('Example', function () {
-  it('Should return expected example val', function () {
+  it('Should return expected example val - specifyRtn', function () {
     var res = teFlow(
         one,
         two,

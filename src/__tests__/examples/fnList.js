@@ -20,7 +20,7 @@ var three = function (twoVal) {
 
 
 describe('Example', function () {
-  it('Should return expected example val', function () {
+  it('Should return expected example val - fnList', function () {
     var res = teFlow(
       one,
       two,

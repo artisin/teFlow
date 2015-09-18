@@ -40,7 +40,7 @@ var addOne = function (oneVal, twoval, threeVal) {
 
 
 describe('Example', function () {
-  it('Should return expected example val', function () {
+  it('Should return expected example val - objReturn', function () {
     var res = teFlow(
       one,
       two,

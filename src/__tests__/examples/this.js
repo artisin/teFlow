@@ -33,7 +33,7 @@ var changeMe = function (name) {
   //bump shared count
   this.incNum();
   //change name
-  this.changeName('artisin');
+  this.changeName('Te');
   return {
     oldName: name,
     newName: this.getName()
@@ -55,30 +55,28 @@ var addYou = function (oldName, newName) {
   };
 };
 
-
-
 describe('Example', function () {
-  it('Should return expected example val', function () {
+  it('Should return expected example val - this', function () {
     var res = teFlow(
-      {
-        //set init this
-        _this: new beThis({
-          name: 'Te'
-        })
-      },
-      addMe,
-      changeMe,
-      addYou,
-      {
-        return: function (me) {
-          return {
-            count: this.rtnNum(),
-            myName: me.name,
-            //reassigned this from prv fn
-            yourName: this.getName()
-          };
+        {
+          //set init this
+          _this: new beThis({
+            name: '</artisin>'
+          })
+        },
+        addMe,
+        changeMe,
+        addYou,
+        {
+          return: function (me) {
+            return {
+              count: this.rtnNum(),
+              myName: me.name,
+              //reassigned this from prv fn
+              yourName: this.getName()
+            };
+          }
         }
-      }
     );
     expect(res).to.eql({
       count: 1,
