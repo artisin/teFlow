@@ -87,18 +87,25 @@ var two = function () {
   return 2;
 };
 var three = function () {
-  //no return
+  return 'three';
 };
 var four = function () {
-  debugger
   return 4;
 };
 
 var res = teFlow(
     {
-      _end: {
-        one: function () {
-          debugger
+      _flow: true,
+      _res: {
+        //only return numbers
+        isNum: function (arg) {
+          if (typeof arg === 'number') {
+            return arg;
+          }
+        },
+        //add one to num
+        addOne: function (arg) {
+          return arg + 1;
         }
       }
     },
