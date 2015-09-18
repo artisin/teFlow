@@ -113,7 +113,6 @@ var TeFlow = {
      * @return {arr}          -arg val with appled fns
      */
     var applyFn = function (arg, [firstFn, ...restFn]) {
-      // debugger
       if (arg === undefined) {
         return;
       }else if (!self._h.isArr(arg)) {
@@ -137,10 +136,8 @@ var TeFlow = {
         return applyFn(a, fns);
       });
       var _applyFn = self._memoize ? _memApplyFn : applyFn;
-      return argArr.filter(function (a) {
+      return argArr.map(function (a) {
         var res = _applyFn(a, fns);
-        // console.log(res)
-        // debugger
         if (!self._h.isUdf(res) && res[0]) {
           return res[0];
         }
@@ -154,17 +151,26 @@ var TeFlow = {
      * @return {arr}                  ->stream
      */
     var applyOpt = function (argArr, optToApply) {
+      // debugger
+      //filters out undefined results
+      var filterOutUdf = function (resArry) {
+        return resArry.filter(function (val) {
+          if (!self._h.isUdf(val)) {
+            return val;
+          }
+        });
+      };
       //function
       if (self._h.isFn(optToApply)) {
-        return mapApply(argArr, optToApply);
+        return filterOutUdf(mapApply(argArr, optToApply));
       }else if (self._h.isObj(optToApply)) {
         //object
-        return mapApply(argArr, Object.keys(optToApply).map(function(opt) {
+        return filterOutUdf(mapApply(argArr, Object.keys(optToApply).map(function(opt) {
           return optToApply[opt];
-        }));
+        })));
       }else if (self._h.isArr(optToApply)) {
         //array
-        return mapApply(argArr, optToApply);
+        return filterOutUdf(mapApply(argArr, optToApply));
       }
     };
     /**
@@ -191,8 +197,7 @@ var TeFlow = {
       //Go through option list to see what needs
       //to be applied
       return streamOpt.reduce(function (prv, cur) {
-        // debugger;
-        return applyOpt(prv, self.optList[cur]);
+        return applyOpt(prv, self.optStreamList[cur]);
       }, valArr);
     };
     /**
@@ -213,8 +218,9 @@ var TeFlow = {
         streamOpt
       ]);
     };
+
     //stream opt
-    return this.streamOpt.length
+    return this.streamOpt.length && valueArr.length
            ? setOptions(valueArr, funcOpt, this.streamOpt)
            : valueArr;
   },
@@ -274,7 +280,6 @@ var TeFlow = {
     //first is func
     // debugger
     if (this.firstIsFn) {
-      // debugger
       var res = Object.keys(this.argsToApply).length
                 ? this.first.apply(this._this, self.applyOpts(this.argsToApply._fnArgs, {
                   //apply start strams opts
