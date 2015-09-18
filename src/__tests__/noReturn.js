@@ -1,5 +1,5 @@
 var expect = require('expect.js');
-var teFlow = require('../../lib/teflow.js');
+var teFlow = require('../../lib/te-flow.js');
 /*
 Test Two
  */

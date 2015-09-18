@@ -1,4 +1,4 @@
-var teFlow = require('../../lib/teflow-node');
+var teFlow = require('../../lib/te-flow');
 
 
 
@@ -79,31 +79,47 @@ var teFlow = require('../../lib/teflow-node');
 // 
 // 
 
-var zero = function () {
+var zeroMap = function () {
   return 0;
 };
-var one = function () {
-  return 'one';
-};
-var two = function (val) {
-  return val;
-};
-var three = function () {
-  return {
-    three: 3
-  };
-};
-var four = function () {
-  return true;
-};
-var five = function () {
-  return false;
-};
-var six = function () {
-  return ['cool', true];
+
+var oneMap = function () {
+  var args = [].slice.call(arguments);
+  var args = args.map(function (val) {
+    return val + 1;
+  });
+  args.push(1);
+  return args;
 };
 
-var res = teFlow({_flow: true}, zero, one, two('two'), three, four, five, six);
+var twoMap = function () {
+  var args = [].slice.call(arguments);
+  var args = args.map(function (val) {
+    return val + 2;
+  });
+  args.push(2);
+  return args;
+};
+
+var threeMap = function () {
+  var args = [].slice.call(arguments);
+  var args = args.map(function (val) {
+    return val + 3;
+  });
+  args.push(3);
+  return args;
+};
+
+
+var res = teFlow(
+  {
+    _flow: true
+  },
+  zeroMap,
+  oneMap,
+  twoMap,
+  threeMap
+);
 
 
 debugger
