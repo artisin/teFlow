@@ -71,9 +71,9 @@ var res = teFlow({
 ```
 
 
-### Examples
+## Examples
 
-#### Fn. List
+##### Fn. List
 The basic concept here is each function will be called and then the return of the called function is passed onto the next function.
 ```js
 var one = function () {
@@ -102,8 +102,8 @@ var res = teFlow(
 ```
 
 
-#### Obj Return [`_objApply` opt]
-By default the `_objApply` option is turned on to help you better orginize and or visulize what your are passing onto the next function. That being said, if you where to return a non object it reset the argument stream to that value.
+##### Obj Return || `_objApply` option
+By default the `_objApply` option is turned __on__ to help you better orginize and or visulize what your are passing onto the next function. That being said, if you where to return a non object it will reset the argument stream to that value.
 ```js
 var one = function () {
   return 1;
@@ -151,3 +151,59 @@ var res = teFlow(
 //res === [2, 3, 4]
 ```
 
+
+##### Specify Return
+There might be times when you would like to specify your return to a certian global variable or something of the sort. Don't you fret my friend you can do so via the passing an `object` as the last argument that has the key of `return` and then the corresponding value will be what is returned.
+```js
+//Global to be populated and returned
+var global = [];
+var string = null;
+
+var one = function () {
+  return 'Did you';
+};
+
+var two = function (oneVal) {
+  global.push(oneVal + ' say,');
+  string = oneVal + ' say, ';
+  return 'you';
+};
+
+var three = function (twoVal) {
+  global.push(twoVal + ' needed to');
+  string += twoVal + ' needed to';
+  return {
+    key1: 'specify',
+    key2: 'your',
+    key3: 'return?',
+    space: ' '
+  };
+};
+
+var four = function (k1, k2, k3, sp) {
+  global.push(k1 + sp + k2 + sp + k3);
+  string += sp + k1 + sp + k2 + sp + k3;
+  //no return will return global
+  return;
+};
+
+var res = teFlow(
+    one,
+    two,
+    three,
+    four,
+    {
+      return: {
+        global: global,
+        string: string
+      }
+    }
+);
+
+//The Return
+<!-- res = {
+  global: ["Did you say,", "you needed to", "specify your return?"],
+  string: "Did you say, you needed to specify your return?"
+}
+ -->
+```
