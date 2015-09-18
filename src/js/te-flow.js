@@ -105,11 +105,11 @@ var TeFlow = {
   applyOpts: function (valueArr, funcOpt) {
     var self = this;
     /**
-     * cylces through opts to apply
+     * recursive through opts to apply
      * applys fns to said arg through some recursion
      * @param  {arg} arg      -indv arg
      * @param  {fn}  firstFn  -current fn
-     * @param  {arr} restFn   -rest of fn funks to be invoked
+     * @param  {arr} restFn   -rest of funks to be invoked
      * @return {arr}          -arg val with appled fns
      */
     var applyFn = function (arg, [firstFn, ...restFn]) {
@@ -120,8 +120,8 @@ var TeFlow = {
         arg = [arg];
       }
       return firstFn === undefined
-      ? arg
-      : applyFn(firstFn.apply(self._this, arg), restFn);
+             ? arg
+             : applyFn(firstFn.apply(self._this, arg), restFn);
     };
     /**
      * Cycles through the vals and fns to apply
@@ -158,10 +158,9 @@ var TeFlow = {
       if (self._h.isFn(optToApply)) {
         return mapApply(argArr, optToApply);
       }else if (self._h.isObj(optToApply)) {
-        // debugger
         //object
-        return mapApply(argArr, Object.keys(optToApply).map(function(o) {
-          return optToApply[o];
+        return mapApply(argArr, Object.keys(optToApply).map(function(opt) {
+          return optToApply[opt];
         }));
       }else if (self._h.isArr(optToApply)) {
         //array
