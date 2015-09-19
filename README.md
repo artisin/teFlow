@@ -2,7 +2,7 @@
 [![Build Status](https://travis-ci.org/artisin/gulpFast.svg?branch=master)](https://travis-ci.org/artisin/teFlow)
 [![Dependencies Status](https://david-dm.org/artisin/teFlow.svg)](https://david-dm.org/artisin/teFlow)
 
-A function wrapper to help you organize your code in cleaner functional manner. I typically use a promise library to structor my code base like [ASQ](https://github.com/getify/asynquence) but when I'm unable to do so I wanted to still maintain a clean functional manner. In a nutshell teFlow creates an argument stream to through `apply` to pass. 
+A function wrapper to help you organize your code in cleaner functional manner. I typically use a promise library to structor my code base like [ASQ](https://github.com/getify/asynquence) but when I'm unable to do so I wanted to still maintain a clean functional manner.
 
 
 ## Note
@@ -56,9 +56,9 @@ var res = teFlow(
 ```
 
 ### Options || Type: `obj`
-+ `_args` or `_initArgs` || Type:`obj`, `method`, `obj w/methods` Default: `null`
++ `_args` or `_initArgs` || Type:`obj`, `method`, `obj w/methods` 
   * Sets the initial arguments which will be passed to the first fn call.
-+ `_this` || Type: `obj` Default: `null`
++ `_this` || Type: `obj`
   * Sets the value of `this` that will be applied to your fns otherwise the fn will be applied with null ex:`fn.apply(null, [args])`
 + `_objApply` || Type:`boolean` Default: `true`
   * Allows you to just return an `object` whose values will then be mapped and passed onto the next function instead of having to return the `arguments` obj to pass said arguments. 
@@ -78,12 +78,13 @@ var res = teFlow(
     * Uses lodash memoize to reduce overhead.
 
 #### Setting The Options
-Options are passed as an `object` as the first argument to `teFlow`.
+Options are passed as an `object` as the first argument.
 ```js
 var res = teFlow({
   {
     //options
-    _this: self
+    _this: self,
+    _flow: true,
     _args: {
         argOne: 1,
         cool: 'sota'
@@ -96,7 +97,7 @@ var res = teFlow({
 ## Examples
 
 ##### Arg Option
-The arg option allows you to set the inital arguments that are to be sent to the first function and you can do this using the following.
+The arg option allows you to set the inital arguments which in turn are applied to the first function.
 ```js
 //All methods will produce the same arguments
 var fn1 = function (one, two, three) {
