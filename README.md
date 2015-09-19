@@ -228,7 +228,7 @@ var res = teFlow(
 ```
 
 ##### Obj Keep - `_objKeep` option
-By default the `_objKeep` option is turned __off__. Nevertheless, as I said previously this option can come handy with reduce, merge, and the like.
+By default the `_objKeep` option is turned __off__. Nevertheless, as I said previously this option will map out the arguments as object to retaining both the key and value rather than mapping out just the values which can come handy with reduce, merge, and the like.
 ```js
 //Merge helper
 var merge = function() {
