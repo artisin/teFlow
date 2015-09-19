@@ -235,6 +235,7 @@ var TeFlow = {
   },
   applyArgs: function (value, initRun = false) {
     var self = this;
+    var keepOveride = false;
     if (value === undefined) {
       return;
     }
@@ -244,6 +245,8 @@ var TeFlow = {
         self.argsToApply._fnArgs.push(val);
       }else if (self.optList._objReturn && self._h.isObj(val)) {
         var keepKey = self.optList._objKeep;
+        //keep override check
+        keepKey = keepOveride ? !keepKey : keepKey;
         //Object assign
         self.argsToApply._fnArgs = Object.keys(val).map(function (key) {
           var objKey;
@@ -264,11 +267,21 @@ var TeFlow = {
     //pushes val for next invoke
     if (!initRun) {
       //check to see if the user has specified a new this val
-      var thisReAssign = function (val) {
-        if (!self._h.isUdf(val) && val._this) {
-          self._this = val._this;
-          //remove key
-          delete val._this;
+      //of overrided keep obj
+      var checkAux = function (val) {
+        if (!self._h.isUdf(val)) {
+          //this
+          if (val._this) {
+            self._this = val._this;
+            //remove key
+            delete val._this;
+          }
+          //keep
+          if (!self._h.isUdf(val._objKeep)) {
+            keepOveride = true;
+            //remove key
+            delete val._objKeep;
+          }
         }
         return val;
       };
@@ -276,11 +289,11 @@ var TeFlow = {
       pushApply((function () {
         //need to send val as an array to have opts applied
         if (!self._h.isArr(value)) {
-          value = [thisReAssign(value)];
+          value = [checkAux(value)];
           var res = self.applyOpts(value, {_res: true});
           return res[0];
         }
-        return self.applyOpts(thisReAssign(value), {_res: true});
+        return self.applyOpts(checkAux(value), {_res: true});
       })());
       //apply end stream opts
       //check flatten stream - might be a better way to handle this but fuck it.
