@@ -230,7 +230,7 @@ var res = teFlow(
 ##### Obj Keep - `_objKeep` option
 By default the `_objKeep` option is turned __off__. Nevertheless, as I said previously this option can come handy with reduce, merge, and the like.
 ```js
-//Reduce helper which will return an object with the new object.
+//Reduce helper which will return an object with the key pair added.
 //In this situation you could use a merge fn although I rarely 
 //use merge in this fasion.
 var addNewObjArg = function (args, newObj) {

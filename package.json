@@ -1,7 +1,7 @@
 {
   "name": "te-flow",
-  "version": "0.0.7",
-  "description": "A function flow wrapper that jives with my js style when I can't use promises.",
+  "version": "0.0.8",
+  "description": "A function control and flow wrapper that jives with my js style when I can't use promises.",
   "main": "lib/te-flow.js",
   "author": "Tē - </artisin>",
   "license": "MIT",
