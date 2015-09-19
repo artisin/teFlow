@@ -230,16 +230,20 @@ var res = teFlow(
 ##### Obj Keep - `_objKeep` option
 By default the `_objKeep` option is turned __off__. Nevertheless, as I said previously this option can come handy with reduce, merge, and the like.
 ```js
-//Reduce helper which will return an object with the key pair added.
-//In this situation you could use a merge fn although I rarely 
-//use merge in this fasion.
-var addNewObjArg = function (args, newObj) {
-  return Object.keys(args).reduce(function (prv, cur) {
-    var curObj  = args[cur],
-        curKey  = Object.keys(curObj)[0];
-    prv[curKey] = curObj[curKey];
-    return prv;
-  }, newObj);
+//Merge helper
+var merge = function() {
+  var obj = {},
+      i = 0,
+      il = arguments.length,
+      key;
+  for (; i < il; i++) {
+    for (key in arguments[i]) {
+      if (arguments[i].hasOwnProperty(key)) {
+          obj[key] = arguments[i][key];
+      }
+    }
+  }
+  return obj;
 };
 
 var one = function () {
@@ -250,25 +254,24 @@ var one = function () {
 
 var two = function (oneVal) {
   //oneVal {keyOne: 1}
-  return addNewObjArg(arguments, {keyTwo: 2});
+  return merge(oneVal, {keyTwo: 2});
 };
 
 var three = function (oneVal, twoVal) {
   //oneVal {keyOne: 1}
   //twoVal {keyTwo: 2}
-  return addNewObjArg(arguments, {keyThree: 3});
-  //This would also work
-  // return _.merege(arguments, {keyThree: 3})
+  return merge(oneVal, twoVal, {keyThree: 3});
 };
 
 var res = teFlow(
     {
-      _objReturn: true
+      _objKeep: true
     },
     one,
     two,
     three
 );
+//res === [{keyOne: 1}, {keyTwo: 2}, {keyThree: 3}]
 ```
 
 
@@ -339,7 +342,6 @@ var res = teFlow(
     }
 );
 
-//The Return
 // res = {
 //   global: ["Did you say,", "you needed to", "specify your return?"],
 //   string: "Did you say, you needed to specify your return?",
