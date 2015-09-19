@@ -2,7 +2,21 @@
 [![Build Status](https://travis-ci.org/artisin/gulpFast.svg?branch=master)](https://travis-ci.org/artisin/teFlow)
 [![Dependencies Status](https://david-dm.org/artisin/teFlow.svg)](https://david-dm.org/artisin/teFlow)
 
-A function wrapper to help you organize your code in cleaner functional manner. I typically use a promise library to structor my code base like [ASQ](https://github.com/getify/asynquence) but when I'm unable to do so I wanted to still maintain a clean functional manner.
+A function wrapper to help you organize your code in cleaner functional manner without promises! I love me some promises libraries like [ASQ](https://github.com/getify/asynquence) to structor my code base in a orginized fasion. Nevertheless, I was foreced to veture out into a promiseless world so I needed a promiseful tool to lend a helping hand and teFlow was born. In a nutshell teFlow is a function wrapper that creates an argument steam though `apply`.
+
+```js
+//The native way
+var res1 = one();
+var res2 = two.apply(null, res1);
+var res3 = three.apply(null, res2);
+
+//The teFlow way
+var res = teFlow(
+    one,
+    two,
+    three
+);
+```
 
 
 ## Note
@@ -36,32 +50,16 @@ gulp test
 ```
 
 ## Api
-### About
-In a nutshell te-flow is a helper function wrapper that creates an argument steam though `apply` because ain't nobody like doing that by hand.
-
-
-```js
-//The typical way
-var res1 = one();
-var res2 = two.apply(null, res1);
-var res3 = three.apply(null, res2);
-
-var teFlow = require('te-flow');
-//The teFlow way
-var res = teFlow(
-    one,
-    two,
-    three
-);
-```
 
 ### Options || Type: `obj`
 + `_args` or `_initArgs` || Type:`obj`, `method`, `obj w/methods` 
   * Sets the initial arguments which will be passed to the first fn call.
 + `_this` || Type: `obj`
   * Sets the value of `this` that will be applied to your fns otherwise the fn will be applied with null ex:`fn.apply(null, [args])`
-+ `_objApply` || Type:`boolean` Default: `true`
-  * Allows you to just return an `object` whose values will then be mapped and passed onto the next function instead of having to return the `arguments` obj to pass said arguments. 
++ `_objReturn` || Type:`boolean` Default: `true`
+  * Allows you to return an `object` whose values will then be mapped as arguments and passed onto the next function instead of having to return an array or the `arguments` object making your code much more readable.
+  * `_objKeep` || Type:`boolean` Default: `false`
+    - Rather than mapping only the oject values this will perserve each object key and value by mapping out said objects as the arguments to retain the object keys which can be quite useful with reduce, merge, and the like.
 + `_flow` || Type:`boolean` Default:`false`
   * An interesting option. Basically, with this option turned on every fn return is pushed into your argument stream or queue or whatever you want to call it.
   * `_flatten` || Type:`boolean` Default:`false`
@@ -96,7 +94,7 @@ var res = teFlow({
 
 ## Examples
 
-##### Arg Option
+##### Passing Inital Arguments - `_args` Option
 The arg option allows you to set the inital arguments which in turn are applied to the first function.
 ```js
 //All methods will produce the same arguments
@@ -153,7 +151,7 @@ teFlow(
 ```
 
 ##### Fn. List
-The basic concept here is each function will be called and then the return of the called function is passed onto the next function.
+The basic concept is each function will be called and then the return of the called will pass those arguments onto the next function via `apply`.
 ```js
 var one = function () {
   return 1;
@@ -181,8 +179,8 @@ var res = teFlow(
 ```
 
 
-##### Obj Return || `_objApply` option
-By default the `_objApply` option is turned __on__ to help you better organize and or visualize what your are passing onto the next function. That being said, if you were to return a non object it will reset the argument stream to that value. 
+##### Obj Return - `_objReturn` option
+By default the `_objReturn` option is turned __on__ to help you better organize and or visualize what your are passing onto the next function. That being said, if you were to return a non object it will reset the argument stream to that value. 
 ```js
 var one = function () {
   return 1;
@@ -229,8 +227,52 @@ var res = teFlow(
 //res === [2, 3, 4]
 ```
 
+##### Obj Keep - `_objKeep` option
+By default the `_objKeep` option is turned __off__. Nevertheless, as I said previously this option can come handy with reduce, merge, and the like.
+```js
+//Reduce helper which will return an object with the new object.
+//In this situation you could use a merge fn although I rarely 
+//use merge in this fasion.
+var addNewObjArg = function (args, newObj) {
+  return Object.keys(args).reduce(function (prv, cur) {
+    var curObj  = args[cur],
+        curKey  = Object.keys(curObj)[0];
+    prv[curKey] = curObj[curKey];
+    return prv;
+  }, newObj);
+};
 
-##### Specify Return
+var one = function () {
+  return {
+    keyOne: 1
+  };
+};
+
+var two = function (oneVal) {
+  //oneVal {keyOne: 1}
+  return addNewObjArg(arguments, {keyTwo: 2});
+};
+
+var three = function (oneVal, twoVal) {
+  //oneVal {keyOne: 1}
+  //twoVal {keyTwo: 2}
+  return addNewObjArg(arguments, {keyThree: 3});
+  //This would also work
+  // return _.merege(arguments, {keyThree: 3})
+};
+
+var res = teFlow(
+    {
+      _objReturn: true
+    },
+    one,
+    two,
+    three
+);
+```
+
+
+##### Specified Return
 There might be times when you would like to specify your return to a certain global variable or something of the sort. Don't you fret my friend you can do so via the passing an `object` as the last argument that has the key of `return` and then the corresponding value will be what is returned. The `return` can be a specified object or method.
 ```js
 //To Be returned

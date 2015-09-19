@@ -79,27 +79,71 @@ var teFlow = require('../../lib/te-flow');
 // 
 // 
 
+// var addNewObjArg = function (args, newObj) {
+//   return Object.keys(args).reduce(function (prv, cur) {
+//     var curObj = args[cur],
+//         curKey = Object.keys(curObj)[0];
+//     prv[curKey] = curObj[curKey];
+//     return prv;
+//   }, newObj);
+// };
+
+// var one = function () {
+//   return {
+//     keyOne: 1
+//   };
+// };
+// var two = function (oneVal) {
+//   //oneVal {keyOne: 1}
+//   return addNewObjArg(arguments, {keyTwo: 2});
+// };
+// var three = function (oneVal, twoVal) {
+//   //oneVal {keyOne: 1}
+//   //twoVal {keyTwo: 2}
+//   return addNewObjArg(arguments, {keyThree: 3});
+// };
+
+
+var merge = function() {
+    var obj = {},
+        i = 0,
+        il = arguments.length,
+        key;
+    for (; i < il; i++) {
+        for (key in arguments[i]) {
+            if (arguments[i].hasOwnProperty(key)) {
+                obj[key] = arguments[i][key];
+            }
+        }
+    }
+    return obj;
+};
+
+
 
 var one = function () {
-  return arguments;
+  return {
+    keyOne: 1
+  };
+};
+var two = function (oneVal) {
+  //oneVal {keyOne: 1}
+  return merge(arguments, {keyTwo: 2});
+};
+var three = function (oneVal, twoVal) {
+  //oneVal {keyOne: 1}
+  //twoVal {keyTwo: 2}
+  return merge(arguments, {keyThree: 3});
 };
 
 
 var res = teFlow(
     {
-      _args: {
-        one: function () {
-          return 1;
-        },
-        two: function () {
-          return true;
-        },
-        three: function () {
-          return 'three';
-        }
-      }
+      _objKeep: true
     },
-    one
+    one,
+    two,
+    three
 );
 
 // res === [1, 2, 4];
