@@ -8,25 +8,26 @@ teFlow
  */
 var TeFlow = {
   init: function () {
-    // debugger;
     var self = this;
-    //init precheck for options
+    // debugger;
+
     //set args
-    this.args = [...arguments];
-    this.argsToApply = {
-      _fnArgs: []
-    };
+    this.args        = [...arguments];
+    this.argsToApply = {_fnArgs: []};
+
+    //init precheck for options
     if (!this.count) {
-      this.count = 1;
-      var optConfig = this.checkOpts(this.args);
-      this.args = optConfig.args;
+      this.count       = 1;
+      var optConfig    = this.checkOpts(this.args);
+      this.args        = optConfig.args;
       this.argsToApply = optConfig.argsToApply;
     }
     // debugger
-    this.first = this.args.length ? this.args.shift() : null;
-    this.rest = this.args;
-    this.firstIsFn = self._h.isFn(self.first);
+    this.first      = this.args.length ? this.args.shift() : null;
+    this.rest       = this.args;
+    this.firstIsFn  = self._h.isFn(self.first);
     this.firstIsUdf = self._h.isUdf(self.first);
+
     //check for args to apply
     var _argsToApply = this.rest[this.rest.length - 1];
     if (!self._h.isUdf(_argsToApply) && _argsToApply._fnArgs) {
@@ -51,7 +52,8 @@ var TeFlow = {
     //availible options and corresponding actions
     this.optList = {
       _stream: setOptD('_stream', true),
-      _objApply: setOptD('_objApply', true),
+      _objReturn: setOptD('_objReturn', true),
+      _objKeep: setOptD('_objKeep', false),
       _flow: setOptD('_flow', false),
       _flatten: setOptD('_flatten', false)
     };
@@ -240,10 +242,16 @@ var TeFlow = {
       if (self.optList._flow) {
         //Flow push
         self.argsToApply._fnArgs.push(val);
-      }else if (self.optList._objApply && self._h.isObj(val)) {
+      }else if (self.optList._objReturn && self._h.isObj(val)) {
+        var keepKey = self.optList._objKeep;
         //Object assign
         self.argsToApply._fnArgs = Object.keys(val).map(function (key) {
-          return val[key];
+          var objKey;
+          if (keepKey) {
+            objKey = {};
+            objKey[key] = val[key];
+          }
+          return keepKey ? objKey : val[key];
         });
       }else {
         //Reassign Stream
