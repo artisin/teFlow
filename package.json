@@ -1,6 +1,6 @@
 {
   "name": "te-flow",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "A function wrapper that jives with my js style when I can't use promises.",
   "main": "lib/te-flow.js",
   "author": "Tē - </artisin>",
