@@ -1,7 +1,7 @@
 {
   "name": "te-flow",
-  "version": "0.0.8",
-  "description": "A function control and flow wrapper that jives with my js style when I can't use promises.",
+  "version": "0.0.9",
+  "description": "A function wrapper that jives with my js style when I can't use promises.",
   "main": "lib/te-flow.js",
   "author": "Tē - </artisin>",
   "license": "MIT",
@@ -13,13 +13,13 @@
     "test": "gulp test"
   },
   "keywords": [
+    "artisin",
     "javascript",
-    "js",
+    "argument stream",
     "function flow",
     "function control",
     "function wrapper",
-    "te",
-    "artisin"
+    "te"
   ],
   "dependencies":{
     "lodash.isarray": "^3.0.4",
