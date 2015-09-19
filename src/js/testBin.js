@@ -185,10 +185,22 @@ var two = function (oneVal) {
 };
 
 var three = function (oneVal, twoVal) {
+  debugger
   //oneVal {keyOne: 1}
   //twoVal {keyTwo: 2}
-  return merge(oneVal, twoVal, {keyThree: 3});
+  return {
+    _objKeep: false,
+    one: merge(oneVal, twoVal, {keyThree: 3})
+  };
 };
+
+var four = function (allObjs) {
+  return allObjs;
+};
+
+// var five = function () {
+//   debugger
+// }
 
 var res = teFlow(
     {
@@ -196,7 +208,8 @@ var res = teFlow(
     },
     one,
     two,
-    three
+    three,
+    four
 );
 
 
