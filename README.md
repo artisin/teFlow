@@ -274,6 +274,21 @@ var res = teFlow(
 //res === [{keyOne: 1}, {keyTwo: 2}, {keyThree: 3}]
 ```
 
+While `_objKeep` is great and all there will be times when you don't want it to be returned as such. Good news, you can override the set default on a individual function basis through your return. This action is only temporary and after the return it will revert back to the set default.
+```js
+//using the same code as above just overriding the _objKeep
+var three = function (oneVal, twoVal) {
+  //oneVal {keyOne: 1}
+  //twoVal {keyTwo: 2}
+  return {
+    _objKeep: false,
+    one: merge(oneVal, twoVal, {keyThree: 3})
+  };
+};
+
+//res === [{keyOne: 1, keyTwo: 2, keyThree: 3}]
+```
+
 
 ##### Specified Return
 There might be times when you would like to specify your return to a certain global variable or something of the sort. Don't you fret my friend you can do so via the passing an `object` as the last argument that has the key of `return` and then the corresponding value will be what is returned. The `return` can be a specified object or method.
