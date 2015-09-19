@@ -1,13 +1,13 @@
 {
   "name": "te-flow",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "A function flow wrapper that jives with my js style when I can't use promises.",
   "main": "lib/te-flow.js",
   "author": "Tē - </artisin>",
   "license": "MIT",
   "repository" :{ 
     "type" : "git", 
-    "url" : "https://github.com/npm/npm.git"
+    "url" : "https://github.com/artisin/teFlow"
   },
   "scripts": {
     "test": "gulp test"
