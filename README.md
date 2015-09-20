@@ -443,7 +443,8 @@ var res = teFlow(
     addYou,
     {
       return: function (me) {
-        //me === me ref
+        //me.oldName === '</artisin>'
+        //me.name === 'Te'
         return {
           count: this.rtnNum(),
           myName: me.name,
