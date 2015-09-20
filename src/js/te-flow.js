@@ -122,7 +122,7 @@ var TeFlow = {
   applyOpts: function (valueArr, funcOpt) {
     var self = this;
     /**
-     * recursive through opts to apply
+     * cycle through opts to apply
      * applys fns to said arg through some recursion
      * @param  {arg} arg      -indv arg
      * @param  {fn}  firstFn  -current fn
