@@ -171,7 +171,6 @@ var three = function (twoVal) {
 var res = teFlow(
     one,
     two,
-    //res === return or three fn.
     three
 );
 //res === 3
