@@ -1,8 +1,8 @@
-# teFlow _function-control-and-flow_
+# teFlow _functional-control-and-flow_
 [![Build Status](https://travis-ci.org/artisin/gulpFast.svg?branch=master)](https://travis-ci.org/artisin/teFlow)
 [![Dependencies Status](https://david-dm.org/artisin/teFlow.svg)](https://david-dm.org/artisin/teFlow)
 
-A function wrapper to help you organize your code in cleaner functional manner without promises! I love me some promises libraries like [ASQ](https://github.com/getify/asynquence) to structor my code base in a orginized fasion. Nevertheless, I was foreced to veture out into a promiseless world so I needed a promiseful tool to lend a helping hand and teFlow was born. In a nutshell teFlow is a function wrapper that creates an argument steam though `apply`.
+A function wrapper to help you organize your code in cleaner functional manner. I love me some promises libraries like [ASQ](https://github.com/getify/asynquence) to structor my code base in a orginized functional fasion. Nevertheless, I was foreced to veture out into a promiseless world so I needed a promiseful tool to lend a helping hand and teFlow was born. In a nutshell teFlow creates an argument steam through `apply` so you can be functional with your thoughts.
 
 ```js
 //The native way
@@ -20,7 +20,7 @@ var res = teFlow(
 
 
 ## Note
-I created this package for a current project I'm currently working on. With that said, I would hold your horses until I run this guy through the battlefield because the Api might change a bit before I release a 1.x. ~1-2 months tops. 
+I created this package for a current project I'm currently working on. And I would hold your horses until I run this guy through the battlefield because the Api might change a bit before I release a 1.x. ~1-2 months tops. 
 
 
 ## Usage
@@ -35,9 +35,9 @@ npm install te-flow --save-dev
 var teFlow = require('te-flow');
 ```
 ###### _Alternative_ 
-Download the `te-flow.js` or `te-flow.browsers.js` file depending on your use in the `lib` folder and drop it into your projcet. The diffrence between the two files is the `.browser` injects all the dependencies into one file while the default uses `require` to include the dependencies. 
+Download the `te-flow.js` or `te-flow.browsers.js` file depending on your use in the `/lib` folder and drop it into your projcet. The diffrence between the two files is the `.browser` injects all the dependencies into one file while the default uses `require` to include the dependencies. 
 ###### _Compressed Files_
-I recommend you use webpack to manage your Js assets but I understand this is sometimes not an option so in the lib folder I have also included compressed and non-webpacked files as well. 
+I recommend you use webpack to manage your Js assets but I understand this is sometimes not an option so in the lib folder I have also included compressed and non-webpacked files.
 
 ### Development
 ```
@@ -64,8 +64,7 @@ gulp test
   * An interesting option. Basically, with this option turned on every fn return is pushed into your argument stream or queue or whatever you want to call it.
   * `_flatten` || Type:`boolean` Default:`false`
       - Flattens any sub arrays in stream.
-+ Control
-  * These conrol helpers will be inkoved every start, end, or result of the current function. The functions will be applied in order mapping out the input arguments. For example if your end arguments look something like this `[1, 2, 3]` and you had two function it do the following: `fn1(arg[0])`, `fn2(arg[0])`, `fn1(arg[1])`, `fn2(arg[1])`, ect.
++ __Control Methods__
   + `_start` || Type:`object` (method fns)
     * Arguments before applied to function.
   + `_end` || Type:`object` (method fns)
@@ -151,7 +150,7 @@ teFlow(
 ```
 
 ##### Fn. List
-The basic concept is each function will be called and then the return of the called will pass those arguments onto the next function via `apply`.
+The basic concept is each function will be called and then the return of the called function will pass those arguments onto the next function via `apply`.
 ```js
 var one = function () {
   return 1;
@@ -303,12 +302,14 @@ var one = function () {
 };
 
 var two = function (oneVal) {
+  //oneVal === 'Did you'
   global.push(oneVal + ' say,');
   string = oneVal + ' say, ';
   return 'you';
 };
 
 var three = function (twoVal) {
+  //oneVal === 'you'
   global.push(twoVal + ' needed to');
   string += twoVal + ' needed to';
   return {
@@ -320,6 +321,10 @@ var three = function (twoVal) {
 };
 
 var four = function (k1, k2, k3, sp) {
+  //k1 === 'specify'
+  //k2 === 'your'
+  //k3 === 'return?'
+  //sp === ' '
   global.push(k1 + sp + k2 + sp + k3);
   string += sp + k1 + sp + k2 + sp + k3;
   //If passed an arg to the return method
@@ -341,7 +346,7 @@ var res = teFlow(
     //   }
     // }
 
-    //To avoid issues I would recommend you use the
+    //To avoid issues I recommend you use the
     //return method, this also allows you to access
     //any returned args from your last fn
     {
@@ -399,6 +404,7 @@ var addMe = function () {
 };
 
 var changeMe = function (name) {
+  //name === '</artisin>'
   //bump shared count
   this.incNum();
   //change name
@@ -410,6 +416,8 @@ var changeMe = function (name) {
 };
 
 var addYou = function (oldName, newName) {
+  //oldName === '</artisin>'
+  //newName === 'Te'
   //Add
   var you = new beThis({
     name: 'You'
@@ -436,7 +444,7 @@ var res = teFlow(
     addYou,
     {
       return: function (me) {
-        debugger
+        //me === me ref
         return {
           count: this.rtnNum(),
           myName: me.name,
@@ -484,5 +492,5 @@ var res = teFlow(
 
 
 
-##### Control
-_Docs coming soon._
+##### Control Methods
+These methods will be inkoved every start, end, or result of the current function. The functions will be applied in order mapping out the input arguments. For example if your end arguments look something like this `[1, 2, 3]` and you had two function it do the following: `fn1(arg[0])`, `fn2(arg[0])`, `fn1(arg[1])`, `fn2(arg[1])`, ect.

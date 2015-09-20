@@ -1,7 +1,7 @@
 {
   "name": "te-flow",
-  "version": "0.1.3",
-  "description": "A function wrapper that jives with my js style when I can't use promises.",
+  "version": "0.1.4",
+  "description": "A functional function wrapper through apply.",
   "main": "lib/te-flow.js",
   "author": "Tē - </artisin>",
   "license": "MIT",
@@ -16,9 +16,12 @@
     "artisin",
     "javascript",
     "argument stream",
-    "function flow",
-    "function control",
-    "function wrapper",
+    "flow",
+    "control",
+    "wrapper",
+    "promiseless",
+    "function",
+    "functional",
     "te"
   ],
   "dependencies":{
