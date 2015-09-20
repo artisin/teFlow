@@ -20,7 +20,7 @@ var res = teFlow(
 
 
 ## Note
-I created this package for a current project I'm currently working on. And I would hold your horses until I run this guy through the battlefield because the Api might change a bit before I release a 1.x. ~1-2 months tops. 
+I created this package for a current project I'm currently working on and I would hold your horses until I run this guy through the battlefield because the Api might change a bit before I release a 1.x. ~1-2 months tops. 
 
 
 ## Usage
