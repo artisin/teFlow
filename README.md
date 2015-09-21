@@ -494,4 +494,5 @@ var res = teFlow(
 
 
 ##### Control Methods
+_Docs Coming Soon_
 These methods will be inkoved every start, end, or result of the current function. The functions will be applied in order mapping out the input arguments. For example if your end arguments look something like this `[1, 2, 3]` and you had two function it do the following: `fn1(arg[0])`, `fn2(arg[0])`, `fn1(arg[1])`, `fn2(arg[1])`, ect.
