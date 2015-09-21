@@ -158,58 +158,86 @@ var teFlow = require('../../lib/te-flow');
 //   }, args);
 // };
 
-var merge = function() {
-  var obj = {},
-      i = 0,
-      il = arguments.length,
-      key;
-  for (; i < il; i++) {
-    for (key in arguments[i]) {
-      if (arguments[i].hasOwnProperty(key)) {
-          obj[key] = arguments[i][key];
-      }
-    }
-  }
-  return obj;
+var beThis = (function () {
+  var count = 0;
+  var cool = function (obj) {
+    this.name = obj.name;
+    this.getName = function () {
+      return this.name;
+    };
+    this.changeName = function (newName) {
+      this.name = newName;
+    };
+    this.returnThis = function () {
+      return this;
+    };
+    this.incNum = function () {
+      count++;
+    };
+    this.rtnNum = function() {
+      return count;
+    };
+  };
+  return cool;
+}());
+
+var addMe = function () {
+  return this.getName();
 };
 
-var one = function () {
+var changeMe = function (name) {
+  //name === '</artisin>' 
+  //bump shared count 
+  this.incNum();
+  //change name 
+  this.changeName('Te');
   return {
-    keyOne: 1
+    oldName: name,
+    newName: this.getName()
   };
 };
-
-var two = function (oneVal) {
-  //oneVal {keyOne: 1}
-  return merge(oneVal, {keyTwo: 2});
-};
-
-var three = function (oneVal, twoVal) {
-  debugger
-  //oneVal {keyOne: 1}
-  //twoVal {keyTwo: 2}
+ 
+var addYou = function (oldName, newName) {
+  //oldName === '</artisin>' 
+  //newName === 'Te' 
+  //Add new beThis
+  var you = new beThis({
+    name: 'You'
+  });
+  //bind me to current this ref for latter use
+  var me = (function() {
+    return this;
+  }.bind(this)());
   return {
-    _objKeep: false,
-    one: merge(oneVal, twoVal, {keyThree: 3})
+    //reassign this 
+    _this: you,
+    me: me
   };
 };
-
-var four = function (allObjs) {
-  return allObjs;
-};
-
-// var five = function () {
-//   debugger
-// }
-
+ 
 var res = teFlow(
     {
-      _objKeep: true
+      //set init this 
+      _this: new beThis({
+        name: '</artisin>'
+      })
     },
-    one,
-    two,
-    three,
-    four
+    addMe,
+    changeMe,
+    addYou,
+    {
+      return: function (me) {
+        //me.oldName === '</artisin>' 
+        //me.name === 'Te' 
+        debugger
+        return {
+          count: this.rtnNum(),
+          myName: me.getName(),
+          //reassigned this from prv fn 
+          yourName: this.getName()
+        };
+      }
+    }
 );
 
 

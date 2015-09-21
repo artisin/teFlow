@@ -421,13 +421,15 @@ var addYou = function (oldName, newName) {
   var you = new beThis({
     name: 'You'
   });
+  //bind me to current this ref for latter use
+  var me = function() {
+    return this;
+  };
+  me = me.call(this);
   return {
     //reassign this
     _this: you,
-    me: {
-      oldName: oldName,
-      name: newName
-    },
+    me: me
   };
 };
 
@@ -443,11 +445,10 @@ var res = teFlow(
     addYou,
     {
       return: function (me) {
-        //me.oldName === '</artisin>'
-        //me.name === 'Te'
+        //me ref to me this
         return {
           count: this.rtnNum(),
-          myName: me.name,
+          myName: me.getName(),
           //reassigned this from prv fn
           yourName: this.getName()
         };
