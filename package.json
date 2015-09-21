@@ -1,6 +1,6 @@
 {
   "name": "te-flow",
-  "version": "0.1.8",
+  "version": "0.1.9",
   "description": "A functional function wrapper through apply.",
   "main": "lib/te-flow.js",
   "author": "Tē - </artisin>",
