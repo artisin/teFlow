@@ -25,12 +25,12 @@ var TeFlow = {
     // debugger
     this.first      = this.args.length ? this.args.shift() : null;
     this.rest       = this.args;
-    this.firstIsFn  = self._h.isFn(self.first);
-    this.firstIsUdf = self._h.isUdf(self.first);
+    this.firstIsFn  = self._L.isFn(self.first);
+    this.firstIsUdf = self._L.isUdf(self.first);
 
     //check for args to apply
     var _argsToApply = this.rest[this.rest.length - 1];
-    if (!self._h.isUdf(_argsToApply) && _argsToApply._fnArgs) {
+    if (!self._L.isUdf(_argsToApply) && _argsToApply._fnArgs) {
       this.argsToApply._fnArgs = this.rest.pop()._fnArgs;
     }
     return this.process();
@@ -42,12 +42,12 @@ var TeFlow = {
     // debugger;
     var self = this;
     var car = args[0];
-    var carIsObj = this._h.isFn(car) ? false : this._h.isObj(car);
+    var carIsObj = this._L.isFn(car) ? false : this._L.isObj(car);
     //will contain any stream opts to be applied
     this.streamOpt = [];
     //default helper
     var setOptD = function (opt, def) {
-      return self._h.isUdf(car[opt]) ? def : car[opt];
+      return self._L.isUdf(car[opt]) ? def : car[opt];
     };
     //availible options and corresponding actions
     this.optList = {
@@ -74,13 +74,13 @@ var TeFlow = {
       //helper to invoke args if methods
       var invokeArgs = function (initArgs) {
         //args in method
-        if (self._h.isFn(initArgs)) {
+        if (self._L.isFn(initArgs)) {
           return initArgs();
         }
         //assume args is obj
         return Object.keys(initArgs).reduce(function (prv, cur) {
           var curArg = initArgs[cur];
-          prv[cur] = !self._h.isFn(curArg)
+          prv[cur] = !self._L.isFn(curArg)
                      ? initArgs[cur]
                      : curArg();
           return prv;
@@ -132,7 +132,7 @@ var TeFlow = {
     var applyFn = function (arg, [firstFn, ...restFn]) {
       if (arg === undefined) {
         return;
-      }else if (!self._h.isArr(arg)) {
+      }else if (!self._L.isArr(arg)) {
         arg = [arg];
       }
       return firstFn === undefined
@@ -149,13 +149,13 @@ var TeFlow = {
     var mapApply = function (argArr, fns) {
       // debugger;
       //memoize to avodie repeat
-      var _memApplyFn = self._h.memoize(function (a) {
+      var _memApplyFn = self._L.memoize(function (a) {
         return applyFn(a, fns);
       });
       var _applyFn = self._memoize ? _memApplyFn : applyFn;
       return argArr.map(function (a) {
         var res = _applyFn(a, fns);
-        if (!self._h.isUdf(res) && res[0]) {
+        if (!self._L.isUdf(res) && res[0]) {
           return res[0];
         }
       });
@@ -170,14 +170,14 @@ var TeFlow = {
     var applyOpt = function (argArr, optToApply) {
       // debugger
       //function
-      if (self._h.isFn(optToApply)) {
+      if (self._L.isFn(optToApply)) {
         return mapApply(argArr, optToApply);
-      }else if (self._h.isObj(optToApply)) {
+      }else if (self._L.isObj(optToApply)) {
         //object
         return mapApply(argArr, Object.keys(optToApply).map(function(opt) {
           return optToApply[opt];
         }));
-      }else if (self._h.isArr(optToApply)) {
+      }else if (self._L.isArr(optToApply)) {
         //array
         return mapApply(argArr, optToApply);
       }
@@ -223,7 +223,7 @@ var TeFlow = {
       };
       return optCycle.apply(self, [
         valArr,
-        self._h.defaults(fnOpt, _defaults),
+        self._L.defaults(fnOpt, _defaults),
         streamOpt
       ]);
     };
@@ -243,7 +243,7 @@ var TeFlow = {
       if (self.optList._flow) {
         //Flow push
         self.argsToApply._fnArgs.push(val);
-      }else if (self.optList._objReturn && self._h.isObj(val)) {
+      }else if (self.optList._objReturn && self._L.isObj(val)) {
         var keepKey = self.optList._objKeep;
         //keep override check
         keepKey = keepOveride ? !keepKey : keepKey;
@@ -258,7 +258,7 @@ var TeFlow = {
         });
       }else {
         //Reassign Stream
-        val = self._h.isArr(val) ? val : [val];
+        val = self._L.isArr(val) ? val : [val];
         self.argsToApply._fnArgs = val;
       }
     };
@@ -269,7 +269,7 @@ var TeFlow = {
       //check to see if the user has specified a new this val
       //of overrided keep obj
       var checkAux = function (val) {
-        if (!self._h.isUdf(val)) {
+        if (!self._L.isUdf(val)) {
           //this
           if (val._this) {
             self._this = val._this;
@@ -277,7 +277,7 @@ var TeFlow = {
             delete val._this;
           }
           //keep
-          if (!self._h.isUdf(val._objKeep)) {
+          if (!self._L.isUdf(val._objKeep)) {
             keepOveride = true;
             //remove key
             delete val._objKeep;
@@ -288,7 +288,7 @@ var TeFlow = {
       //res push
       pushApply((function () {
         //need to send val as an array to have opts applied
-        if (!self._h.isArr(value)) {
+        if (!self._L.isArr(value)) {
           value = [checkAux(value)];
           var res = self.applyOpts(value, {_res: true});
           return res[0];
@@ -299,7 +299,7 @@ var TeFlow = {
       //check flatten stream - might be a better way to handle this but fuck it.
       self.argsToApply._fnArgs = !self.optList._flatten
                                  ? self.argsToApply._fnArgs
-                                 : self._h.flatten(self.argsToApply._fnArgs);
+                                 : self._L.flatten(self.argsToApply._fnArgs);
       self.argsToApply._fnArgs = self.applyOpts(self.argsToApply._fnArgs, {
         _end: true
       });
@@ -327,13 +327,13 @@ var TeFlow = {
         this.rest.push(this.argsToApply);
       }
       return this.init.apply(self, this.rest);
-    }else if (self._h.isObj(this.first) && this.first.return) {
+    }else if (self._L.isObj(this.first) && this.first.return) {
       var rtn = this.first.return;
       //return object, if func all and return
-      return this._h.isFn(rtn)
+      return this._L.isFn(rtn)
              ? rtn.apply(self._this, this.argsToApply._fnArgs || [])
              : rtn;
-    }else if (self._h.isObj(this.first) && this.first._fnArgs) {
+    }else if (self._L.isObj(this.first) && this.first._fnArgs) {
       //first is return fn obj
       return this.first._fnArgs.length
              ? this.first._fnArgs
@@ -345,7 +345,7 @@ var TeFlow = {
         this.rest.push(this.argsToApply);
       }
       return this.init.apply(self, this.rest);
-    }else if (self._h.isUdf(this.first) && this.rest.length) {
+    }else if (self._L.isUdf(this.first) && this.rest.length) {
       //first is undefined but still args to be called
       if (Object.keys(this.argsToApply).length) {
         //push args to arg chain
@@ -369,7 +369,7 @@ var TeFlow = {
   getThis: function () {
     return this;
   },
-  _h: {
+  _L: {
     flatten: function (val) {
       var flatten = function (array, result) {
         for (var i = 0; i < array.length; i++) {
