@@ -39,10 +39,22 @@ var TeFlow = {
   Checks for special options
    */
   checkOpts: function (args) {
-    // debugger;
     var self = this;
     var car = args[0];
     var carIsObj = this._L.isFn(car) ? false : this._L.isObj(car);
+    var allOpts = ['_stream', '_objReturn', '_objKeep', '_flow', '_args',
+                   '_flatten', '_start', '_res', '_end', '_option', '_this'];
+    //check to make sure if an object is as first arg it has an opt
+    var hasOpt = false;
+    if (carIsObj) {
+      car = car._option ? car._option : car;
+      var keys = Object.keys(car);
+      for (var i = 0; i < keys.length && !hasOpt; i++) {
+        if (allOpts.indexOf(keys[i]) !== -1) {
+          hasOpt = true;
+        }
+      }
+    }
     //will contain any stream opts to be applied
     this.streamOpt = [];
     //default helper
@@ -64,8 +76,7 @@ var TeFlow = {
       _end: null
     };
     //checks for opts, and pushes
-    if (carIsObj) {
-      car = car._option ? car._option : car;
+    if (carIsObj && hasOpt) {
       //hardcoded opts
       //this ref to be applied to funks
       //set this for ref chain
