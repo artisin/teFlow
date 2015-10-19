@@ -1,6 +1,6 @@
 {
   "name": "te-flow",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "A functional function wrapper through apply.",
   "main": "lib/te-flow.js",
   "author": "Tē - </artisin>",
@@ -24,6 +24,7 @@
     "te"
   ],
   "dependencies":{
+    "augment": "4.3.0",
     "lodash.isarray": "^3.0.4",
     "lodash.isfunction": "^3.0.6",
     "lodash.isobject": "^3.0.2",

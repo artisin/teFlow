@@ -1,4 +1,5 @@
 # teFlow _functional-control-and-flow_
+## !! In Development !!
 [![Build Status](https://travis-ci.org/artisin/gulpFast.svg?branch=master)](https://travis-ci.org/artisin/teFlow)
 [![Dependencies Status](https://david-dm.org/artisin/teFlow.svg)](https://david-dm.org/artisin/teFlow)
 
@@ -75,10 +76,24 @@ gulp test
     * Uses lodash memoize to reduce overhead.
 
 #### Setting The Options
-Options are passed as an `object` as the first argument.
+Options are passed as through a `call` object argument or through a `object` as the first argument.
 ```js
+//call
+var res = teFlow.call({
+        //options
+        _this: self,
+        _flow: true,
+        _args: {
+            argOne: 1,
+            cool: 'sota'
+        }
+    },
+    fnOne,
+    fnTwo
+);
+
+//obj
 var res = teFlow({
-  {
     //options
     _this: self,
     _flow: true,
@@ -86,8 +101,10 @@ var res = teFlow({
         argOne: 1,
         cool: 'sota'
     }
-  }
-});
+  },
+  fnOne,
+  fnTwo
+);
 ```
 
 

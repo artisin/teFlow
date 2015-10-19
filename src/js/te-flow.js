@@ -1,86 +1,121 @@
-var isArray    = require('lodash.isarray');
-var isFunction = require('lodash.isfunction');
-var isObject   = require('lodash.isobject');
-var memoize    = require('lodash.memoize');
-var defaults   = require('lodash.defaults');
+'use strict';
+const isArray    = require('lodash.isarray');
+const isFunction = require('lodash.isfunction');
+const isObject   = require('lodash.isobject');
+const memoize    = require('lodash.memoize');
+const defaults   = require('lodash.defaults');
+const augment    = require('augment');
+const defclass   = augment.defclass;
 /*
 teFlow
  */
-var TeFlow = {
+var TeFlow = defclass({
+  constructor: function (thisArg) {
+    const self = this;
+    self._self = self;
+    self.userOptions = {};
+    //no opts return
+    if (!thisArg) { return; }
+    //set opts
+    var allOpts = ['initArgs', 'args', 'this', 'stream', 'objReturn',
+                   'objKeep', 'flow', 'flatten', 'start', 'res', 'end'];
+    allOpts.forEach(function (val) {
+      if (thisArg[val]) {
+        self.userOptions[val] = thisArg[val];
+      }
+    });
+    //check memoize sep
+    if (thisArg.memoize) {
+      self._memoize = thisArg.memoize;
+    }
+  },
   init: function () {
-    var self = this;
-    // debugger;
-
+    const self = this;
     //set args
-    this.args        = [...arguments];
-    this.argsToApply = {_fnArgs: []};
+    self.args        = [...arguments];
+    self.argsToApply = {_fnArgs: []};
 
     //init precheck for options
-    if (!this.count) {
-      this.count       = 1;
-      var optConfig    = this.checkOpts(this.args);
-      this.args        = optConfig.args;
-      this.argsToApply = optConfig.argsToApply;
+    if (!self.count) {
+      self.count       = 1;
+      var optConfig    = self.checkOpts(self.args);
+      self.args        = optConfig.args;
+      self.argsToApply = optConfig.argsToApply;
     }
-    // debugger
-    this.first      = this.args.length ? this.args.shift() : null;
-    this.rest       = this.args;
-    this.firstIsFn  = self._L.isFn(self.first);
-    this.firstIsUdf = self._L.isUdf(self.first);
+    //set fns
+    self.first      = self.args.length ? self.args.shift() : null;
+    self.rest       = self.args;
+    self.firstIsFn  = self._L.isFn(self.first);
+    self.firstIsUdf = self._L.isUdf(self.first);
 
     //check for args to apply
-    var _argsToApply = this.rest[this.rest.length - 1];
+    var _argsToApply = self.rest[self.rest.length - 1];
     if (!self._L.isUdf(_argsToApply) && _argsToApply._fnArgs) {
-      this.argsToApply._fnArgs = this.rest.pop()._fnArgs;
+      self.argsToApply._fnArgs = self.rest.pop()._fnArgs;
     }
-    return this.process();
+
+    return self.process();
   },
   /*
   Checks for special options
    */
   checkOpts: function (args) {
-    var self = this;
+    const self = this;
+    var userOptions = Object.keys(self.userOptions);
     var car = args[0];
-    var carIsObj = this._L.isFn(car) ? false : this._L.isObj(car);
-    var allOpts = ['_stream', '_objReturn', '_objKeep', '_flow', '_args',
-                   '_flatten', '_start', '_res', '_end', '_option', '_this'];
+    var carIsObj = self._L.isFn(car) ? false : self._L.isObj(car);
+    var constOpts = ['initArgs', 'args', 'this', 'stream', 'objReturn',
+                   'objKeep', 'flow', 'flatten', 'start', 'res', 'end'];
+    var fnOpts = ['_stream', '_objReturn', '_objKeep', '_flow', '_args',
+                  '_flatten', '_start', '_res', '_end', '_option', '_this'];
+
     //check to make sure if an object is as first arg it has an opt
-    var hasOpt = false;
+    var hasOpt =  false;
     if (carIsObj) {
       car = car._option ? car._option : car;
       var keys = Object.keys(car);
       for (var i = 0; i < keys.length && !hasOpt; i++) {
-        if (allOpts.indexOf(keys[i]) !== -1) {
+        if (fnOpts.indexOf(keys[i]) !== -1) {
           hasOpt = true;
         }
       }
     }
     //will contain any stream opts to be applied
-    this.streamOpt = [];
+    self.streamOpt = [];
     //default helper
-    var setOptD = function (opt, def) {
-      return self._L.isUdf(car[opt]) ? def : car[opt];
+    var setOptD = function (constOpt, fnOpt, def) {
+      //check for cunstructor options first
+      if (self.userOptions[constOpts]) {
+        return self.userOptions[constOpts];
+      }
+      return self._L.isUdf(car[fnOpt]) ? def : car[fnOpt];
     };
     //availible options and corresponding actions
-    this.optList = {
-      _stream: setOptD('_stream', true),
-      _objReturn: setOptD('_objReturn', true),
-      _objKeep: setOptD('_objKeep', false),
-      _flow: setOptD('_flow', false),
-      _flatten: setOptD('_flatten', false)
+    self.optList = {
+      _stream: setOptD('stream', '_stream', true),
+      _objReturn: setOptD('objReturn', '_objReturn', true),
+      _objKeep: setOptD('objKeep', '_objKeep', false),
+      _flow: setOptD('flow', '_flow', false),
+      _flatten: setOptD('flatten', '_flatten', false)
     };
     //stream options
-    this.optStreamList = {
-      _start: null,
-      _res: null,
-      _end: null
+    self.optStreamList = {
+      _start: setOptD('start', '_start', null),
+      _res: setOptD('res', '_res', null),
+      _end: setOptD('end', '_end', null)
     };
     //checks for opts, and pushes
-    if (carIsObj && hasOpt) {
+    if (carIsObj && hasOpt || userOptions.length) {
       //hardcoded opts
       //this ref to be applied to funks
       //set this for ref chain
-      this._this = car._this ? car._this : null;
+      if (self.userOptions['this']) {
+        //constOpt
+        self._this =  self.userOptions['this'];
+      }else {
+        //fnOpt
+        self._this = car._this ? car._this : null;
+      }
       //Initail args
       //helper to invoke args if methods
       var invokeArgs = function (initArgs) {
@@ -97,13 +132,21 @@ var TeFlow = {
           return prv;
         }, {});
       };
-      if (car._args) {
+      //gate for init args
+      if (self.userOptions.initArgs || self.userOptions.args) {
+        //constOpt
+        var _args = self.userOptions.args || self.userOptions.initArgs;
+        self.applyArgs(invokeArgs(_args), true);
+      }else if (car._args) {
         self.applyArgs(invokeArgs(car._args), true);
       } else if (car._initArgs) {
+        //fnOpt
         self.applyArgs(invokeArgs(car._initArgs), true);
       }
       //memorize - true by default
-      this._memoize = car._memoize === false ? false : true;
+      if (!self._memoize) {
+        self._memoize = car._memoize === false ? false : true;
+      }
       //cylce through opt list
       Object.keys(self.optStreamList).forEach(function (key) {
         //if key push the be applied when the time comes
@@ -116,14 +159,15 @@ var TeFlow = {
           }
         }
       });
-      //ect....
       //shift off to return
-      args.shift();
+      if (!userOptions.length) {
+        args.shift();
+      }
     }
+    //not the cleanest way to handle this but
+    //oh well
     return {
       args: args,
-      //not the cleanest way to handle this but
-      //oh well
       argsToApply: self.argsToApply
     };
   },
@@ -131,7 +175,7 @@ var TeFlow = {
   Applys any opts to val if set
    */
   applyOpts: function (valueArr, funcOpt) {
-    var self = this;
+    const self = this;
     /**
      * cycle through opts to apply
      * applys fns to said arg through some recursion
@@ -158,7 +202,6 @@ var TeFlow = {
      * @return {arr}        ->stream
      */
     var mapApply = function (argArr, fns) {
-      // debugger;
       //memoize to avodie repeat
       var _memApplyFn = self._L.memoize(function (a) {
         return applyFn(a, fns);
@@ -179,7 +222,6 @@ var TeFlow = {
      * @return {arr}                  ->stream
      */
     var applyOpt = function (argArr, optToApply) {
-      // debugger
       //function
       if (self._L.isFn(optToApply)) {
         return mapApply(argArr, optToApply);
@@ -244,6 +286,11 @@ var TeFlow = {
            ? setOptions(valueArr, funcOpt, this.streamOpt)
            : valueArr;
   },
+  /**
+   * Applies any fn args if specifed by user
+   * @param  {dependant on res}  value
+   * @param  {Boolean} initRun if inital run no to trip shit up
+   */
   applyArgs: function (value, initRun = false) {
     var self = this;
     var keepOveride = false;
@@ -274,7 +321,6 @@ var TeFlow = {
       }
     };
     //apply res option
-    // debugger
     //pushes val for next invoke
     if (!initRun) {
       //check to see if the user has specified a new this val
@@ -323,62 +369,56 @@ var TeFlow = {
   Processes and shit
    */
   process: function () {
-    var self = this;
+    const self = this;
     //first is func
-    if (this.firstIsFn) {
-      var res = Object.keys(this.argsToApply).length
-                ? this.first.apply(this._this, self.applyOpts(this.argsToApply._fnArgs, {
+    if (self.firstIsFn) {
+      var res = Object.keys(self.argsToApply).length
+                ? self.first.apply(self._this, self.applyOpts(self.argsToApply._fnArgs, {
                   //apply start strams opts
                   _start: true
                 }))
-                : this.first.call(this._this);
+                : self.first.call(self._this);
       self.applyArgs(res);
       //return
-      if (Object.keys(this.argsToApply).length) {
-        this.rest.push(this.argsToApply);
+      if (Object.keys(self.argsToApply).length) {
+        self.rest.push(self.argsToApply);
       }
-      return this.init.apply(self, this.rest);
-    }else if (self._L.isObj(this.first) && this.first.return) {
-      var rtn = this.first.return;
+      return self.init.apply(self, self.rest);
+    }else if (self._L.isObj(self.first) && self.first.return) {
+      var rtn = self.first.return;
       //return object, if func all and return
-      return this._L.isFn(rtn)
-             ? rtn.apply(self._this, this.argsToApply._fnArgs || [])
+      return self._L.isFn(rtn)
+             ? rtn.apply(self._this, self.argsToApply._fnArgs || [])
              : rtn;
-    }else if (self._L.isObj(this.first) && this.first._fnArgs) {
+    }else if (self._L.isObj(self.first) && self.first._fnArgs) {
       //first is return fn obj
-      return this.first._fnArgs.length
-             ? this.first._fnArgs
+      return self.first._fnArgs.length
+             ? self.first._fnArgs
              : undefined;
-    }else if (!this.firstIsFn && !this.firstIsUdf && this.first !== null) {
+    }else if (!self.firstIsFn && !self.firstIsUdf && self.first !== null) {
       //if first non-func assume args to be applied
-      self.applyArgs(this.first);
-      if (Object.keys(this.argsToApply).length) {
-        this.rest.push(this.argsToApply);
+      self.applyArgs(self.first);
+      if (Object.keys(self.argsToApply).length) {
+        self.rest.push(self.argsToApply);
       }
-      return this.init.apply(self, this.rest);
-    }else if (self._L.isUdf(this.first) && this.rest.length) {
+      return self.init.apply(self, self.rest);
+    }else if (self._L.isUdf(self.first) && self.rest.length) {
       //first is undefined but still args to be called
-      if (Object.keys(this.argsToApply).length) {
+      if (Object.keys(self.argsToApply).length) {
         //push args to arg chain
-        this.rest.push(this.argsToApply);
+        self.rest.push(self.argsToApply);
       }
-      return this.init.apply(self, this.rest);
-    }else if (!this.rest.length) {
+      return self.init.apply(self, self.rest);
+    }else if (!self.rest.length) {
       //end call, no args to left to call
       //return args or undefined
-      return Object.keys(this.argsToApply).length
-             ? this.argsToApply._fnArgs
+      return Object.keys(self.argsToApply).length
+             ? self.argsToApply._fnArgs
              : undefined;
     }
     //still beta
-    console.warn('teFlow ERROR: Your not supposed to get here, if you do drop me a line.');
+    console.error('teFlow ERROR: Your not supposed to get here, if you do drop me a line.');
     return undefined;
-  },
-  /*
-  Helpers
-   */
-  getThis: function () {
-    return this;
   },
   _L: {
     flatten: function (val) {
@@ -416,16 +456,16 @@ var TeFlow = {
       return val === undefined;
     }
   }
-};
+});
+
 /*
 Export
  */
-module.exports = function teFlow() {
-  // debugger
-  var _fFlow = Object.create(TeFlow);
-  var self = _fFlow.getThis();
+module.exports = function () {
   var args = [...arguments];
-  return args.length
-  ? _fFlow.init.apply(self, args)
-  : undefined;
+  if (!args.length) {
+    return undefined;
+  }
+  var teFlow = new TeFlow(this);
+  return teFlow.init.apply(teFlow._self, args);
 };
