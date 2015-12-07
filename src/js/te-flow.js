@@ -9,7 +9,7 @@ const defclass   = augment.defclass;
 /*
 teFlow
  */
-var TeFlow = defclass({
+const TeFlow = defclass({
   constructor: function (thisArg) {
     const self = this;
     self._self = self;
@@ -17,7 +17,7 @@ var TeFlow = defclass({
     //no opts return
     if (!thisArg) { return; }
     //set opts
-    var allOpts = ['initArgs', 'args', 'this', 'stream', 'objReturn',
+    let allOpts = ['initArgs', 'args', 'this', 'stream', 'objReturn',
                    'objKeep', 'flow', 'flatten', 'start', 'res', 'end'];
     allOpts.forEach(function (val) {
       if (thisArg[val]) {
@@ -92,6 +92,8 @@ var TeFlow = defclass({
     };
     //availible options and corresponding actions
     self.optList = {
+      _kill: setOptD('kill', '_kill', false),
+      _return: setOptD('return', '_return', false),
       _stream: setOptD('stream', '_stream', true),
       _objReturn: setOptD('objReturn', '_objReturn', true),
       _objKeep: setOptD('objKeep', '_objKeep', false),
@@ -330,14 +332,22 @@ var TeFlow = defclass({
           //this
           if (val._this) {
             self._this = val._this;
-            //remove key
             delete val._this;
           }
           //keep
           if (!self._L.isUdf(val._objKeep)) {
             keepOveride = true;
-            //remove key
             delete val._objKeep;
+          }
+          //kill
+          if (val._kill === true) {
+            self.optList._kill = true;
+            delete val._kill;
+          }
+          //early return
+          if (val._return === true) {
+            self.optList._return = true;
+            delete val._return;
           }
         }
         return val;
@@ -370,6 +380,13 @@ var TeFlow = defclass({
    */
   process: function () {
     const self = this;
+    //if killed undefined
+    if (self.optList._kill) {
+      return undefined;
+    }else if (self.optList._return) {
+      //early return
+      return self.argsToApply._fnArgs || [];
+    }
     //first is func
     if (self.firstIsFn) {
       var res = Object.keys(self.argsToApply).length
