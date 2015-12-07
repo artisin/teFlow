@@ -7,7 +7,7 @@ var one = function () {
 };
 
 
-describe('Args - method', function () {
+describe('Args - method - call', function () {
   it('The inital args sent to the first fn should be the args set by _args', function () {
     var res = teFlow(
         {

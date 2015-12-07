@@ -1,7 +1,7 @@
 {
   "name": "te-flow",
   "version": "0.2.2",
-  "description": "A functional function wrapper through apply.",
+  "description": "A functional pipeline wrapper through apply.",
   "main": "lib/te-flow.js",
   "author": "Tē - </artisin>",
   "license": "MIT",
@@ -14,6 +14,7 @@
   },
   "keywords": [
     "artisin",
+    "te",
     "javascript",
     "argument stream",
     "flow",
@@ -21,10 +22,10 @@
     "wrapper",
     "function",
     "functional",
-    "te"
+    "pipeline"
   ],
   "dependencies":{
-    "augment": "4.3.0",
+    "defclass": "0.1.0",
     "lodash.isarray": "^3.0.4",
     "lodash.isfunction": "^3.0.6",
     "lodash.isobject": "^3.0.2",

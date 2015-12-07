@@ -1,49 +1,40 @@
-// var teFlow = require('../../../lib/te-flow-browser');
+const teFlow = require('../../../lib/te-flow.js');
 
-// console.log(teFlow)
-
-// var zero = function () {
-//   return 0;
-// };
-// var one = function () {
-//   return 'one';
-// };
-
-
-// var work = teFlow(one);
-
-// console.log(work)
-
-// debugger;
-// 
-// 
-// 
-
-var applyFn = function (val, [first, ...rest]) {
-  debugger
-  return first === undefined
-  ? val
-  : applyFn(first(val), rest);
+const one = function (oneVal) {
+  return {
+    oneVal
+  };
 };
 
-
-var add = function (n) {
-  return n + Math.floor(Math.random() * 1000) + 1;
+const two = function (oneVal) {
+  let twoVal = 2;
+  return {
+    _return: true,
+    oneVal,
+    twoVal
+  };
 };
 
-var sub = function (n) {
-  return n + Math.floor(Math.random() * 1000) + 1;
+const three = function (oneVal, twoVal) {
+  let threeVal = 3;
+  return {
+    oneVal,
+    twoVal,
+    threeVal
+  };
 };
 
-
-var mapper = function (args, fns, prepend) {
-  return args.map(function (val) {
-    debugger
-    return applyFn(val, fns);
-  });
-};
-
-var hmm = mapper([1, 2], [add, sub], []);
-
+let earlyReturn = teFlow.call({
+  args: {
+    oneVal: 1
+  }},
+  one,
+  two,
+  three, {
+    return: function () {
+      console.log('Will not get here');
+    }
+  }
+);
 
 debugger

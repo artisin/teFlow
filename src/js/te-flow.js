@@ -1,32 +1,30 @@
-'use strict';
 const isArray    = require('lodash.isarray');
 const isFunction = require('lodash.isfunction');
 const isObject   = require('lodash.isobject');
 const memoize    = require('lodash.memoize');
 const defaults   = require('lodash.defaults');
-const augment    = require('augment');
-const defclass   = augment.defclass;
+const defclass   = require('defclass');
 /*
 teFlow
  */
 const TeFlow = defclass({
-  constructor: function (thisArg) {
+  constructor: function (thisOpt) {
     const self = this;
     self._self = self;
     self.userOptions = {};
     //no opts return
-    if (!thisArg) { return; }
+    if (!thisOpt) { return; }
     //set opts
     let allOpts = ['initArgs', 'args', 'this', 'stream', 'objReturn',
                    'objKeep', 'flow', 'flatten', 'start', 'res', 'end'];
     allOpts.forEach(function (val) {
-      if (thisArg[val]) {
-        self.userOptions[val] = thisArg[val];
+      if (thisOpt[val]) {
+        self.userOptions[val] = thisOpt[val];
       }
     });
     //check memoize sep
-    if (thisArg.memoize) {
-      self._memoize = thisArg.memoize;
+    if (thisOpt.memoize) {
+      self._memoize = thisOpt.memoize;
     }
   },
   init: function () {

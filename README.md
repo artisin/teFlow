@@ -1,8 +1,9 @@
-# teFlow _functional-control-and-flow_
+# teFlow _functional pipeline for control and flow_
+
 [![Build Status](https://travis-ci.org/artisin/gulpFast.svg?branch=master)](https://travis-ci.org/artisin/teFlow)
 [![Dependencies Status](https://david-dm.org/artisin/teFlow.svg)](https://david-dm.org/artisin/teFlow)
 
-A function wrapper to help you organize your code in cleaner functional manner. I love me some promises libraries like [ASQ](https://github.com/getify/asynquence) to structor my code base in a orginized functional fasion. Nevertheless, I was foreced to veture out into a promiseless world so I needed a promiseful tool to lend a helping hand and teFlow was born. In a nutshell teFlow creates an argument steam through `apply` so you can be functional with your thoughts.
+A function wrapper which creates a pipeline to help you organize your code in cleaner functional manner. I love me some promises libraries like [ASQ](https://github.com/getify/asynquence) to structor my code pipeline in a orginized functional fasion. Nevertheless, I was foreced to veture out into a promiseless world so I needed a promiseful tool to lend a helping hand and teFlow was born. In a nutshell teFlow creates an argument pipeline/stream through `apply` so you can be functional with your thoughts and code.
 
 ```js
 //The native way
@@ -20,7 +21,7 @@ var res = teFlow(
 
 
 ## Note
-I created this package for a current project I'm currently working on and I would hold your horses until I run this guy through the battlefield because the Api might change a bit before I release a 1.x. ~1-2 months tops. 
+I created this package for a current project I'm currently working on so I am still in the process of throwing this guy through the battlefield. Although, for the most part the api will remain the same.
 
 
 ## Usage
@@ -51,13 +52,17 @@ gulp test
 
 ## Api
 
-### Options || Type: `obj`
-+ `_args` or `_initArgs` || Type:`obj`, `method`, `obj w/methods` 
-  * Sets the initial arguments which will be passed to the first fn call.
-+ `_this` || Type: `obj`
-  * Sets the value of `this` that will be applied to your fns otherwise the fn will be applied with null ex:`fn.apply(null, [args])`
-+ `_objReturn` || Type:`boolean` Default: `true`
-  * Allows you to return an `object` whose values will then be mapped as arguments and passed onto the next function instead of having to return an array or the `arguments` object making your code much more readable.
+### Init Methods
++ `args` || `initArgs`
+    * Type: `obj`, `method`, `obj w/methods` 
+    * Sets the initial arguments which will be passed to the first function that is invoked.
++ `this`
+  * Type: `obj`
+  * Sets the value of `this` that will be applied to your functions otherwise your functions will be applied with null ex:`fn.apply(null, [args])`
++ `objReturn` 
+ * Type: `boolean` 
+ * Default: `true`
+ * Allows you to return an `object` whose values will then be mapped and passed onto the next function as arguments.     and passed onto the next function instead of having to return an array or the `arguments` object making your code much more readable.
   * `_objKeep` || Type:`boolean` Default: `false`
     - Rather than mapping only the oject values this will perserve each object key and value by mapping out said objects as the arguments to retain the object keys which can be quite useful with reduce, merge, and the like.
 + `_flow` || Type:`boolean` Default:`false`
