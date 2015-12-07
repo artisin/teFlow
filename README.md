@@ -1,5 +1,4 @@
 # teFlow _functional-control-and-flow_
-## !! In Development !!
 [![Build Status](https://travis-ci.org/artisin/gulpFast.svg?branch=master)](https://travis-ci.org/artisin/teFlow)
 [![Dependencies Status](https://david-dm.org/artisin/teFlow.svg)](https://david-dm.org/artisin/teFlow)
 
@@ -76,20 +75,20 @@ gulp test
     * Uses lodash memoize to reduce overhead.
 
 #### Setting The Options
-Options are passed as through a `call` object argument or through a `object` as the first argument.
+Options are set via a `call` object argument or as a `object` being the first argument. If your using `object` method the option keys must be prefixed with `_`. 
 ```js
 //call
-var res = teFlow.call({
-        //options
-        _this: self,
-        _flow: true,
-        _args: {
-            argOne: 1,
-            cool: 'sota'
-        }
-    },
-    fnOne,
-    fnTwo
+  var res = teFlow.call({
+      //options
+      this: self,
+      flow: true,
+      args: {
+        argOne: 1,
+        cool: 'sota'
+      }
+  },
+  fnOne,
+  fnTwo
 );
 
 //obj
@@ -98,8 +97,8 @@ var res = teFlow({
     _this: self,
     _flow: true,
     _args: {
-        argOne: 1,
-        cool: 'sota'
+      argOne: 1,
+      cool: 'sota'
     }
   },
   fnOne,
@@ -107,6 +106,7 @@ var res = teFlow({
 );
 ```
 
+ps. for the rest of these examples I will be withing the `call` method.
 
 ## Examples
 
@@ -121,12 +121,11 @@ var fn1 = function (one, two, three) {
 };
 
 //Object
-teFlow(
-  {
-    _args: {
-      one: 1,
-      two: true,
-      three: 'three'
+teFlow.call({
+  args: {
+    one: 1,
+    two: true,
+    three: 'three'
     }
   },
   fn1
@@ -167,7 +166,7 @@ teFlow(
 ```
 
 ##### Fn. List
-The basic concept is each function will be called and then the return of the called function will pass those arguments onto the next function via `apply`.
+The basic concept is each function will be called and then the return of the called function will pass those arguments onto the next function via `apply` for you.
 ```js
 var one = function () {
   return 1;
