@@ -8,23 +8,23 @@ const defclass   = require('defclass');
 teFlow
  */
 const TeFlow = defclass({
-  constructor: function (thisOpt) {
+  constructor: function (initArgOpt) {
     const self = this;
     self._self = self;
     self.userOptions = {};
     //no opts return
-    if (!thisOpt) { return; }
+    if (!initArgOpt) { return; }
     //set opts
     let allOpts = ['initArgs', 'args', 'this', 'stream', 'objReturn',
                    'objKeep', 'flow', 'flatten', 'start', 'res', 'end'];
     allOpts.forEach(function (val) {
-      if (thisOpt[val]) {
-        self.userOptions[val] = thisOpt[val];
+      if (!self._L.isUdf(initArgOpt[val])) {
+        self.userOptions[val] = initArgOpt[val];
       }
     });
     //check memoize sep
-    if (thisOpt.memoize) {
-      self._memoize = thisOpt.memoize;
+    if (!self._L.isUdf(initArgOpt.memoize)) {
+      self._memoize = initArgOpt.memoize;
     }
   },
   init: function () {
@@ -83,8 +83,8 @@ const TeFlow = defclass({
     //default helper
     var setOptD = function (constOpt, fnOpt, def) {
       //check for cunstructor options first
-      if (self.userOptions[constOpts]) {
-        return self.userOptions[constOpts];
+      if (!self._L.isUdf(self.userOptions[constOpt])) {
+        return self.userOptions[constOpt];
       }
       return self._L.isUdf(car[fnOpt]) ? def : car[fnOpt];
     };
