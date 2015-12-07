@@ -1,6 +1,6 @@
 {
   "name": "te-flow",
-  "version": "0.2.2",
+  "version": "0.3.0",
   "description": "A functional pipeline wrapper through apply.",
   "main": "lib/te-flow.js",
   "author": "Tē - </artisin>",
@@ -16,6 +16,7 @@
     "artisin",
     "te",
     "javascript",
+    "stream",
     "argument stream",
     "flow",
     "control",
