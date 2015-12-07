@@ -176,7 +176,7 @@
 							self._memoize = initArgOpt.memoize;
 						}
 					},
-					init: function init() {
+					invoke: function invoke() {
 						var self = this;
 						//set args
 						self.args = [].concat(_slice.call(arguments));
@@ -555,7 +555,7 @@
 							if (Object.keys(self.argsToApply).length) {
 								self.rest.push(self.argsToApply);
 							}
-							return self.init.apply(self, self.rest);
+							return self.invoke.apply(self, self.rest);
 						} else if (self._L.isObj(self.first) && self.first['return']) {
 							var rtn = self.first['return'];
 							//return object, if func all and return
@@ -569,14 +569,14 @@
 							if (Object.keys(self.argsToApply).length) {
 								self.rest.push(self.argsToApply);
 							}
-							return self.init.apply(self, self.rest);
+							return self.invoke.apply(self, self.rest);
 						} else if (self._L.isUdf(self.first) && self.rest.length) {
 							//first is undefined but still args to be called
 							if (Object.keys(self.argsToApply).length) {
 								//push args to arg chain
 								self.rest.push(self.argsToApply);
 							}
-							return self.init.apply(self, self.rest);
+							return self.invoke.apply(self, self.rest);
 						} else if (!self.rest.length) {
 							//end call, no args to left to call
 							//return args or undefined
@@ -633,7 +633,7 @@
 						return undefined;
 					}
 					var teFlow = new TeFlow(this);
-					return teFlow.init.apply(teFlow._self, args);
+					return teFlow.invoke.apply(teFlow._self, args);
 				};
 
 				/***/
