@@ -68,7 +68,7 @@ gulp test
 + `objKeep`
     * Value: `Boolean` 
     * Default: `false`
-    * Rather than mapping out only the object values this will preserve each object key and value pair and pass said complete objects as the arguments. This can be quite useful with `reduce` and the like. 
+    * This is a particularly dangerous option, but useful in some use cases. What is does is process the first `object` returned and maps out those key/values pairs as separate individual `object` arguments. This can be quite useful with `reduce` and the like with certain data structures. But do note order in objects are not guaranteed in JavaScript  
 + `flow`
     * Value:`Boolean` 
     * Default:`false`
@@ -325,7 +325,9 @@ let res = teFlow.call({
 ```
 
 #### Object Keep - `objKeep`
-By default the `objKeep` option is set to __false__,  nevertheless, as I said previously this option will map out the arguments as objects to retain both the key and value pair rather than mapping out just the values which can come handy with `reduce` and the like.
+By default the `objKeep` option is set to __false__,  nevertheless, as I said previously this is a particularly dangerous option, but useful in some use cases. What is does is process the first `object` returned and maps out those key/values pairs as separate individual `object` arguments. This can be quite useful with `reduce` and the like when dealing with certain data structures. 
+
+__Note:__ The order in objects are not guaranteed in JavaScript.
 ```js
 //Merge helper
 const _ = require('lodash');
