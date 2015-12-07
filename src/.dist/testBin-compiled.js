@@ -49,6 +49,7 @@
 	var teFlow = __webpack_require__(1);
 
 	var one = function one(oneVal) {
+	  debugger;
 	  return {
 	    oneVal: oneVal
 	  };
@@ -57,7 +58,6 @@
 	var two = function two(oneVal) {
 	  var twoVal = 2;
 	  return {
-	    _return: true,
 	    oneVal: oneVal,
 	    twoVal: twoVal
 	  };
@@ -65,6 +65,7 @@
 
 	var three = function three(oneVal, twoVal) {
 	  var threeVal = 3;
+	  debugger;
 	  return {
 	    oneVal: oneVal,
 	    twoVal: twoVal,
@@ -73,13 +74,10 @@
 	};
 
 	var earlyReturn = teFlow.call({
+	  objReturn: false,
 	  args: {
 	    oneVal: 1
-	  } }, one, two, three, {
-	  'return': function _return() {
-	    console.log('Will not get here');
-	  }
-	});
+	  } }, one, two, three);
 
 	debugger;
 
@@ -158,24 +156,24 @@
 	   teFlow
 	    */
 				var TeFlow = defclass({
-					constructor: function constructor(thisOpt) {
+					constructor: function constructor(initArgOpt) {
 						var self = this;
 						self._self = self;
 						self.userOptions = {};
 						//no opts return
-						if (!thisOpt) {
+						if (!initArgOpt) {
 							return;
 						}
 						//set opts
 						var allOpts = ['initArgs', 'args', 'this', 'stream', 'objReturn', 'objKeep', 'flow', 'flatten', 'start', 'res', 'end'];
 						allOpts.forEach(function (val) {
-							if (thisOpt[val]) {
-								self.userOptions[val] = thisOpt[val];
+							if (!self._L.isUdf(initArgOpt[val])) {
+								self.userOptions[val] = initArgOpt[val];
 							}
 						});
 						//check memoize sep
-						if (thisOpt.memoize) {
-							self._memoize = thisOpt.memoize;
+						if (!self._L.isUdf(initArgOpt.memoize)) {
+							self._memoize = initArgOpt.memoize;
 						}
 					},
 					init: function init() {
@@ -232,8 +230,8 @@
 						//default helper
 						var setOptD = function setOptD(constOpt, fnOpt, def) {
 							//check for cunstructor options first
-							if (self.userOptions[constOpts]) {
-								return self.userOptions[constOpts];
+							if (!self._L.isUdf(self.userOptions[constOpt])) {
+								return self.userOptions[constOpt];
 							}
 							return self._L.isUdf(car[fnOpt]) ? def : car[fnOpt];
 						};

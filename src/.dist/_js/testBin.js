@@ -1,22 +1,23 @@
 const teFlow = require('../../../lib/te-flow.js');
 
-const one = function (oneVal) {
+var one = function (oneVal) {
+  debugger
   return {
     oneVal
   };
 };
 
-const two = function (oneVal) {
+var two = function (oneVal) {
   let twoVal = 2;
   return {
-    _return: true,
     oneVal,
     twoVal
   };
 };
 
-const three = function (oneVal, twoVal) {
+var three = function (oneVal, twoVal) {
   let threeVal = 3;
+  debugger
   return {
     oneVal,
     twoVal,
@@ -24,17 +25,15 @@ const three = function (oneVal, twoVal) {
   };
 };
 
+
 let earlyReturn = teFlow.call({
+  objReturn: false,
   args: {
     oneVal: 1
   }},
   one,
   two,
-  three, {
-    return: function () {
-      console.log('Will not get here');
-    }
-  }
+  three
 );
 
 debugger
