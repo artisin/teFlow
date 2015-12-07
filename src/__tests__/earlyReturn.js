@@ -1,40 +1,40 @@
 var expect = require('expect.js');
 var teFlow = require('../../lib/te-flow.js');
 
-const one = function (oneVal) {
+var one = function (oneVal) {
   return {
-    oneVal
+    oneVal: oneVal
   };
 };
 
-const two = function (oneVal) {
-  let twoVal = 2;
+var two = function (oneVal) {
+  var twoVal = 2;
   return {
     _return: true,
-    oneVal,
-    twoVal
+    oneVal: oneVal,
+    twoVal: twoVal
   };
 };
 
-const three = function (oneVal, twoVal) {
-  let threeVal = 3;
+var three = function (oneVal, twoVal) {
+  var threeVal = 3;
   return {
-    oneVal,
-    twoVal,
-    threeVal
+    oneVal: oneVal,
+    twoVal: twoVal,
+    threeVal: threeVal
   };
 };
 
-describe('Early Return', function () {
-  it('If presented with `_return: true` in the return obj return at that point and do not proceed with any other fns', function () {
-    var res = teFlow(
-        one,
-        two,
-        three, {
-          return: function () {
-            console.log('will not get here');
-          }
-        }
+
+describe('Values', function () {
+  it('If presented with `_return: true` return vals at that stage and do not call the next fn in line', function () {
+    var res = teFlow.call({
+      args: {
+        oneVal: 1
+      }},
+      one,
+      two,
+      three
     );
     expect(res).to.eql([1, 2]);
   });
