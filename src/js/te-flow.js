@@ -41,7 +41,7 @@ const TeFlow = defclass({
     //init precheck for options
     if (!self.count) {
       self.count       = 1;
-      var optConfig    = self.checkOpts(self.args);
+      let optConfig    = self.checkOpts(self.args);
       self.args        = optConfig.args;
       self.argsToApply = optConfig.argsToApply;
     }
@@ -52,7 +52,7 @@ const TeFlow = defclass({
     self.firstIsUdf = self._L.isUdf(self.first);
 
     //check for args to apply
-    var _argsToApply = self.rest[self.rest.length - 1];
+    let _argsToApply = self.rest[self.rest.length - 1];
     if (!self._L.isUdf(_argsToApply) && _argsToApply._fnArgs) {
       self.argsToApply._fnArgs = self.rest.pop()._fnArgs;
     }
@@ -64,20 +64,18 @@ const TeFlow = defclass({
    */
   checkOpts: function (args) {
     const self = this;
-    var userOptions = Object.keys(self.userOptions);
-    var car = args[0];
-    var carIsObj = self._L.isFn(car) ? false : self._L.isObj(car);
-    var constOpts = ['initArgs', 'args', 'this', 'stream', 'objReturn',
-                   'objKeep', 'flow', 'flatten', 'start', 'res', 'end'];
-    var fnOpts = ['_stream', '_objReturn', '_objKeep', '_flow', '_args',
+    let userOptions = Object.keys(self.userOptions);
+    let car = args[0];
+    let carIsObj = self._L.isFn(car) ? false : self._L.isObj(car);
+    let fnOpts = ['_stream', '_objReturn', '_objKeep', '_flow', '_args',
                   '_flatten', '_start', '_res', '_end', '_option', '_this'];
 
     //check to make sure if an object is as first arg it has an opt
-    var hasOpt =  false;
+    let hasOpt =  false;
     if (carIsObj) {
       car = car._option ? car._option : car;
-      var keys = Object.keys(car);
-      for (var i = 0; i < keys.length && !hasOpt; i++) {
+      let keys = Object.keys(car);
+      for (let i = 0; i < keys.length && !hasOpt; i++) {
         if (fnOpts.indexOf(keys[i]) !== -1) {
           hasOpt = true;
         }
@@ -86,7 +84,7 @@ const TeFlow = defclass({
     //will contain any stream opts to be applied
     self.streamOpt = [];
     //default helper
-    var setOptD = function (constOpt, fnOpt, def) {
+    const setOptD = function (constOpt, fnOpt, def) {
       //check for cunstructor options first
       if (!self._L.isUdf(self.userOptions[constOpt])) {
         return self.userOptions[constOpt];
@@ -123,14 +121,14 @@ const TeFlow = defclass({
       }
       //Initail args
       //helper to invoke args if methods
-      var invokeArgs = function (initArgs) {
+      const invokeArgs = function (initArgs) {
         //args in method
         if (self._L.isFn(initArgs)) {
           return initArgs();
         }
         //assume args is obj
         return Object.keys(initArgs).reduce(function (prv, cur) {
-          var curArg = initArgs[cur];
+          let curArg = initArgs[cur];
           prv[cur] = !self._L.isFn(curArg)
                      ? initArgs[cur]
                      : curArg();
@@ -140,7 +138,7 @@ const TeFlow = defclass({
       //gate for init args
       if (self.userOptions.initArgs || self.userOptions.args) {
         //constOpt
-        var _args = self.userOptions.args || self.userOptions.initArgs;
+        let _args = self.userOptions.args || self.userOptions.initArgs;
         self.applyArgs(invokeArgs(_args), true);
       }else if (car._args) {
         self.applyArgs(invokeArgs(car._args), true);
@@ -189,7 +187,7 @@ const TeFlow = defclass({
      * @param  {arr} restFn   -rest of funks to be invoked
      * @return {arr}          -arg val with appled fns
      */
-    var applyFn = function (arg, [firstFn, ...restFn]) {
+    const applyFn = function (arg, [firstFn, ...restFn]) {
       if (arg === undefined) {
         return;
       }else if (!self._L.isArr(arg)) {
@@ -206,14 +204,14 @@ const TeFlow = defclass({
      * @param  {fn} fns     - funks to be appled
      * @return {arr}        ->stream
      */
-    var mapApply = function (argArr, fns) {
+    const mapApply = function (argArr, fns) {
       //memoize to avodie repeat
-      var _memApplyFn = self._L.memoize(function (a) {
+      let _memApplyFn = self._L.memoize(function (a) {
         return applyFn(a, fns);
       });
-      var _applyFn = self._memoize ? _memApplyFn : applyFn;
+      let _applyFn = self._memoize ? _memApplyFn : applyFn;
       return argArr.map(function (a) {
-        var res = _applyFn(a, fns);
+        let res = _applyFn(a, fns);
         if (!self._L.isUdf(res) && res[0]) {
           return res[0];
         }
@@ -226,7 +224,7 @@ const TeFlow = defclass({
      * @param  {fn || obj} optToApply -are the fn opts to be applied
      * @return {arr}                  ->stream
      */
-    var applyOpt = function (argArr, optToApply) {
+    const applyOpt = function (argArr, optToApply) {
       //function
       if (self._L.isFn(optToApply)) {
         return mapApply(argArr, optToApply);
@@ -248,7 +246,7 @@ const TeFlow = defclass({
      * @param  {obj} streamOpt -stream option from this.streamOpt
      * @return {arr}           ->stream
      */
-    var optCycle = function (argArr, fnOpt, streamOpt) {
+    const optCycle = function (argArr, fnOpt, streamOpt) {
       //filter out stage apply opts
       streamOpt = streamOpt.filter(function (opt) {
         if (opt !== '_start' && opt !== '_res' && opt !== '_end') {
@@ -273,8 +271,8 @@ const TeFlow = defclass({
      * @param {obj} opts -options
      * @return {arr}     ->stream
      */
-    var setOptions = function (valArr, fnOpt, streamOpt) {
-      var _defaults = {
+    const setOptions = function (valArr, fnOpt, streamOpt) {
+      let _defaults = {
         _start: false,
         _end: false,
         _res: false
@@ -297,22 +295,22 @@ const TeFlow = defclass({
    * @param  {Boolean} initRun if inital run no to trip shit up
    */
   applyArgs: function (value, initRun = false) {
-    var self = this;
-    var keepOveride = false;
+    const self = this;
+    let keepOveride = false;
     if (value === undefined) {
       return;
     }
-    var pushApply = function (val) {
+    const pushApply = function (val) {
       if (self.optList._flow) {
         //Flow push
         self.argsToApply._fnArgs.push(val);
       }else if (self.optList._objReturn && self._L.isObj(val)) {
-        var keepKey = self.optList._objKeep;
+        let keepKey = self.optList._objKeep;
         //keep override check
         keepKey = keepOveride ? !keepKey : keepKey;
         //Object assign
         self.argsToApply._fnArgs = Object.keys(val).map(function (key) {
-          var objKey;
+          let objKey;
           if (keepKey) {
             objKey = {};
             objKey[key] = val[key];
@@ -330,7 +328,7 @@ const TeFlow = defclass({
     if (!initRun) {
       //check to see if the user has specified a new this val
       //of overrided keep obj
-      var checkAux = function (val) {
+      const checkAux = function (val) {
         if (!self._L.isUdf(val)) {
           //this
           if (val._this) {
@@ -360,7 +358,7 @@ const TeFlow = defclass({
         //need to send val as an array to have opts applied
         if (!self._L.isArr(value)) {
           value = [checkAux(value)];
-          var res = self.applyOpts(value, {_res: true});
+          let res = self.applyOpts(value, {_res: true});
           return res[0];
         }
         return self.applyOpts(checkAux(value), {_res: true});
@@ -392,7 +390,7 @@ const TeFlow = defclass({
     }
     //first is func
     if (self.firstIsFn) {
-      var res = Object.keys(self.argsToApply).length
+      let res = Object.keys(self.argsToApply).length
                 ? self.first.apply(self._this, self.applyOpts(self.argsToApply._fnArgs, {
                   //apply start strams opts
                   _start: true
@@ -405,7 +403,7 @@ const TeFlow = defclass({
       }
       return self.invoke.apply(self, self.rest);
     }else if (self._L.isObj(self.first) && self.first.return) {
-      var rtn = self.first.return;
+      let rtn = self.first.return;
       //return object, if func all and return
       return self._L.isFn(rtn)
              ? rtn.apply(self._this, self.argsToApply._fnArgs || [])
@@ -436,15 +434,13 @@ const TeFlow = defclass({
              ? self.argsToApply._fnArgs
              : undefined;
     }
-    //still beta
-    console.error('teFlow ERROR: Your not supposed to get here, if you do drop me a line.');
     return undefined;
   },
   _L: {
     flatten: function (val) {
-      var flatten = function (array, result) {
-        for (var i = 0; i < array.length; i++) {
-          var value = array[i];
+      let flatten = function (array, result) {
+        for (let i = 0; i < array.length; i++) {
+          let value = array[i];
           if (Array.isArray(value)) {
             flatten(value, result);
           } else {
@@ -460,7 +456,7 @@ const TeFlow = defclass({
       for (let i = 0; i < args.length; ++i) {
         args[i] = arguments[i];
       }
-      var orgObj = args.shift();
+      let orgObj = args.shift();
       return defaults(orgObj, args);
     },
     memoize: function (fn) {
@@ -492,6 +488,6 @@ module.exports = function () {
   if (!args.length) {
     return undefined;
   }
-  var teFlow = new TeFlow(this);
+  const teFlow = new TeFlow(this);
   return teFlow.invoke.apply(teFlow._self, args);
 };
