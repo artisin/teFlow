@@ -1,3 +1,7 @@
+#project custom
+.dist
+views
+
 # Global
 *~
 # KDE directory preferences
