@@ -30,7 +30,12 @@ const TeFlow = defclass({
   invoke: function () {
     const self = this;
     //set args
-    self.args        = [...arguments];
+    let args = new Array(arguments.length);
+    for (let i = 0; i < args.length; ++i) {
+      args[i] = arguments[i];
+    }
+
+    self.args = args;
     self.argsToApply = {_fnArgs: []};
 
     //init precheck for options
@@ -451,7 +456,10 @@ const TeFlow = defclass({
       return flatten(val, []);
     },
     defaults: function () {
-      var args = [...arguments];
+      let args = new Array(arguments.length);
+      for (let i = 0; i < args.length; ++i) {
+        args[i] = arguments[i];
+      }
       var orgObj = args.shift();
       return defaults(orgObj, args);
     },
@@ -477,7 +485,10 @@ const TeFlow = defclass({
 Export
  */
 module.exports = function () {
-  var args = [...arguments];
+  let args = new Array(arguments.length);
+  for (let i = 0; i < args.length; ++i) {
+    args[i] = arguments[i];
+  }
   if (!args.length) {
     return undefined;
   }
