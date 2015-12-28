@@ -1,6 +1,7 @@
 #project custom
 .dist
 views
+.tern-project
 
 # Global
 *~
