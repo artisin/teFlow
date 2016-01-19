@@ -568,7 +568,7 @@ let res = teFlow.call({flow: true},
 ```
 
 #### Return - `_return`
-Returns values at said point and does not call the next functions in line.
+Returns values at said point and does not call the next functions in line. __Note:__ If you have a return method in teFlow it will return the values to that return method.
 ```js
 //oneVal === 1
 const one = function (oneVal) {
