@@ -385,6 +385,11 @@ const TeFlow = defclass({
     if (self.optList._kill) {
       return undefined;
     }else if (self.optList._return) {
+      let last = self.rest[self.rest.length - 1];
+      //check for return obj as last arg
+      if (self._L.isObj(last) && Object.keys(last)[0] === 'return') {
+        return last.return.apply(self._this, self.argsToApply._fnArgs || []);
+      }
       //early return
       return self.argsToApply._fnArgs || [];
     }
