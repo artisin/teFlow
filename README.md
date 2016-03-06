@@ -1,9 +1,12 @@
 # teFlow _functional pipeline for control and flow_
 
-[![Build Status](https://travis-ci.org/artisin/gulpFast.svg?branch=master)](https://travis-ci.org/artisin/teFlow)
+[![Build Status](https://travis-ci.org/artisin/teFlow.svg?branch=master)](https://travis-ci.org/artisin/teFlow)
 [![Dependencies Status](https://david-dm.org/artisin/teFlow.svg)](https://david-dm.org/artisin/teFlow)
 
-A function wrapper which creates a pipeline to help you organize your code in a cleaner functional manner. I love me some promise libraries like [ASQ](https://github.com/getify/asynquence) to structure my code pipeline in a organized functional fashion. Nevertheless, I was forced to venture out into a promise-less world so I needed a promise-full tool to lend a helping hand thus teFlow was born. In a nutshell teFlow creates an argument pipeline/stream through `apply` so you can be functional with your thoughts and code.
+## Note!!!
+As I dive deeper into the world of functional programming I can no longer recommend you use this package and in the future I plan to re-haul this whole idea, nevertheless, it does work and its a interesting concept.
+
+A function wrapper which creates a pipeline to help you organize your code in a cleaner functional manner. In a nutshell teFlow creates an argument pipeline/stream through `apply` so you can be functional with your thoughts and code.
 
 ```js
 //The native way
@@ -18,11 +21,6 @@ let res = teFlow(
   three
 );
 ```
-
-
-## Note
-I created this package for a current project I'm currently working on so I'm still in the process of throwing this guy through the battlefield. Although, for the most part the Api will remain the same.
-
 
 
 ## Usage
