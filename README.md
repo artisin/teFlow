@@ -1,10 +1,12 @@
-# teFlow _functional pipeline for control and flow_
+# teFlow _functional-ish* pipeline for control and flow_
 
 [![Build Status](https://travis-ci.org/artisin/teFlow.svg?branch=master)](https://travis-ci.org/artisin/teFlow)
 [![Dependencies Status](https://david-dm.org/artisin/teFlow.svg)](https://david-dm.org/artisin/teFlow)
 
 ## Note!!!
 As I dive deeper into the world of functional programming I can no longer recommend you use this package and in the future I plan to re-haul this whole idea, nevertheless, it does work and its a interesting concept.
+
+*It's not by any means functional by your typical definition. At the time I created this I did not know what actual functional programming was. Nevertheless, this is what I thought it implied. 
 
 ## Intro
 
