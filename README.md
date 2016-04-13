@@ -4,9 +4,9 @@
 [![Dependencies Status](https://david-dm.org/artisin/teFlow.svg)](https://david-dm.org/artisin/teFlow)
 
 ## Note!!!
-As I dive deeper into the world of functional programming I can no longer recommend you use this package and in the future I plan to re-haul this whole idea, nevertheless, it does work and its a interesting concept.
+As I dive deeper into the world of functional programming I can no longer recommend you use this package and <s>in the future I plan to re-haul this whole idea</s>, nevertheless, it does work and its a interesting concept.
 
-[*]**It's not by any means functional by your typical definition. When I created this it was during a time when this was the construct that I thought functional programming implied. I was close-ish but if you think this is neat check out** [Professor Frisby's Mostly Adequate Guide to Functional Programming](https://github.com/MostlyAdequate/mostly-adequate-guide).
+[*] **It's not by any means functional by your typical definition. When I created this it was during a time when this was the construct that I thought functional programming implied. I was close-ish but if you think this is neat check out** [Professor Frisby's Mostly Adequate Guide to Functional Programming](https://github.com/MostlyAdequate/mostly-adequate-guide).
 
 ## Intro
 
