@@ -1,9 +1,9 @@
 {
   "name": "te-flow",
-  "version": "0.3.4",
+  "version": "0.3.5",
   "description": "A functional pipeline wrapper through apply.",
   "main": "lib/te-flow.js",
-  "author": "Tē - </artisin>",
+  "author": "te - </artisin>",
   "license": "MIT",
   "repository" :{ 
     "type" : "git", 
