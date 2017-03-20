@@ -1,0 +1,18 @@
+box: node
+build:
+  steps:
+    - script:
+      name: install yarn
+      code: npm install -g yarn
+    - script:
+      name: report yarn version
+      code: yarn --version
+    - script:
+      name: set yarn cache
+      code: export YARN_CACHE=$WERCKER_CACHE_DIR/yarn
+    - script:
+      name: install dependencies
+      code: HOME=$YARN_CACHE yarn
+    - script:
+      name: test
+      code: yarn test
