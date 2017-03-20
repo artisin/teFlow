@@ -1,14 +1,12 @@
-# teFlow _functional-ish* pipeline for control and flow_
+# teFlow _A pipeline for control and flow_
 
 [![No Maintenance Intended](http://unmaintained.tech/badge.svg)](http://unmaintained.tech/)
 [![Build Status](https://travis-ci.org/artisin/teFlow.svg?branch=master)](https://travis-ci.org/artisin/teFlow)
 [![Dependencies Status](https://david-dm.org/artisin/teFlow.svg)](https://david-dm.org/artisin/teFlow)
 
-## Note!!!
-As I dive deeper into the world of functional programming I can no longer recommend you use this package and <s>in the future I plan to re-haul this whole idea</s>, nevertheless, it does work and its a interesting concept.
+## Important!!!!
+I wrote this package early in my career because I needed a better way to control Functions and data flow. At the time of creation, I thought this was what functional programming entailed or was? Nevertheless, while I do not recommend you use this package it is an interesting concept, and it works, it fucking works hella magic considering I created this at a time when I had little idea what I was doing. (I still don’t know what I’m doing, but I do have a little better idea.) It’s the backbone of [`ctr`](https://github.com/ctr-lang/ctr), and it did the job for the time, but like I said previously I don’t recommend you use this package.
 
-*
-**It's not by any means functional by your typical definition. This is what I thought the construct that is called functional programing implied. I was close-ish but wrong. If you think this idea is neat or want to learn more you should check out** [Professor Frisby's Mostly Adequate Guide to Functional Programming](https://github.com/MostlyAdequate/mostly-adequate-guide).
 
 ## Intro
 
@@ -36,24 +34,44 @@ let res = teFlow(
 npm install te-flow --save-dev
 ```
 
+```
+yarn add te-flow
+```
+
 ### Use
 ```
 var teFlow = require('te-flow');
 ```
 ###### _Alternative_ 
-Download the `te-flow.js` or `te-flow.browsers.js` file depending on your use in the `/lib` folder and drop it into your project. The difference between the two files is the `.browser` injects all the dependencies into one file while the default uses `require` to include the dependencies. 
+Download the `te-flow.js` or `te-flow-browsers.js` file depending on your use in the `/lib` folder and drop it into your project. The difference between the two files is the `-browser` injects all the dependencies into one file while the default uses `require` to include the dependencies. 
 ###### _Compressed Files_
 I recommend you use webpack to manage your Js assets but I understand this is sometimes not an option so in the lib folder I have also included compressed and non-webpacked files.
 
-### Development
+### Commands
+First, make sure you have [yarn](https://yarnpkg.com) [installed](https://yarnpkg.com/en/docs/install).
+
+__SetUp__
 ```
-gulp
+yarn install
+yarn run link
 ```
 
-### Test
+__Test__
 ```
-gulp test
+yarn test
 ```
+
+__Development__
+```
+yarn run dev
+```
+
+__Build__
+```
+yarn run bulid
+```
+
+
 
 ## Api
 

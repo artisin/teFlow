@@ -1,5 +1,5 @@
 var expect = require('expect.js');
-var teFlow = require('./../../lib/te-flow.js');
+var teFlow = require('te-flow');
 
 describe('Saftey', function () {
   it('If an object is passed as an first arg but with no options it should carry on as noraml', function () {

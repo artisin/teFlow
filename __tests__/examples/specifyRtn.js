@@ -1,5 +1,5 @@
 var expect = require('expect.js');
-var teFlow = require('./../../lib/te-flow.js');
+var teFlow = require('te-flow');
 
 var global = [];
 var string = null;

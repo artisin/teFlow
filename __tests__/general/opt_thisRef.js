@@ -1,5 +1,5 @@
 var expect = require('expect.js');
-var teFlow = require('./../../lib/te-flow.js');
+var teFlow = require('te-flow');
 
 var beThis = (function () {
   var count = 0;
