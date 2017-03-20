@@ -51,8 +51,8 @@ First, make sure you have [yarn](https://yarnpkg.com) [installed](https://yarnpk
 
 __SetUp__
 ```
-yarn install
 yarn run link
+yarn install
 ```
 
 __Test__
