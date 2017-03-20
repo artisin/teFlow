@@ -22,6 +22,7 @@
     "clean": "rm -rf dist/*",
     "dev": "npm run clean && NODE_ENV=dev webpack -w",
     "link": "yarn link && yarn link te-flow",
+    "prepublish": "npm run test && npm run build",
     "test": "npm run build && mocha --recursive __tests__/"
   },
   "dependencies": {
