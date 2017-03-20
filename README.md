@@ -1,8 +1,7 @@
 # teFlow _A pipeline for control and flow_
 
-[![No Maintenance Intended](http://unmaintained.tech/badge.svg)](http://unmaintained.tech/)
-[![Build Status](https://travis-ci.org/artisin/teFlow.svg?branch=master)](https://travis-ci.org/artisin/teFlow)
-[![Dependencies Status](https://david-dm.org/artisin/teFlow.svg)](https://david-dm.org/artisin/teFlow)
+[![No Maintenance Intended](http://unmaintained.tech/badge.svg)](http://unmaintained.tech/)[![license](http://img.shields.io/badge/license-mit-3498db.svg)](https://github.com/artisin/ifd/blob/master/LICENSE) [![npm](https://img.shields.io/npm/v/te-flow.svg)](https://github.com/artisin/ifd/blob/master/LICENSE) [![Dependencies Status](https://david-dm.org/artisin/te-flow.svg)](https://david-dm.org/artisin/ifd) [![wercker status](https://app.wercker.com/status/e67347a76765e3822455de87c1fa1ec6/s/master "wercker status")](https://app.wercker.com/project/byKey/e67347a76765e3822455de87c1fa1ec6)
+
 
 ## Important!!!!
 I wrote this package early in my career because I needed a better way to control Functions and data flow. At the time of creation, I thought this was what functional programming entailed or was? Nevertheless, while I do not recommend you use this package it is an interesting concept, and it works, it fucking works hella magic considering I created this at a time when I had little idea what I was doing. (I still don’t know what I’m doing, but I do have a little better idea.) It’s the backbone of [`ctr`](https://github.com/ctr-lang/ctr), and it did the job for the time, but like I said previously I don’t recommend you use this package.

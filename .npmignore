@@ -28,7 +28,6 @@ bower_components/
 .publish
 .directory
 .temp
-dist
 public
 private
 _private
