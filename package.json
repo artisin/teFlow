@@ -1,62 +1,45 @@
 {
   "name": "te-flow",
-  "version": "0.3.5",
-  "description": "A functional pipeline wrapper through apply.",
-  "main": "lib/te-flow.js",
-  "author": "te - </artisin>",
+  "version": "0.4.0",
+  "description": "A function pipeline of sorts to control flow.",
   "license": "MIT",
-  "repository" :{ 
-    "type" : "git", 
-    "url" : "https://github.com/artisin/teFlow"
+  "author": "te schultz",
+  "main": "dist/te-flow.js",
+  "keywords": [
+    "control",
+    "flow",
+    "function",
+    "pipeline",
+    "te",
+    "wrapper"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/artisin/teFlow"
   },
   "scripts": {
-    "test": "gulp test"
+    "build": "npm run clean && webpack --color --progress",
+    "clean": "rm -rf dist/*",
+    "dev": "npm run clean && NODE_ENV=dev webpack -w",
+    "link": "yarn link && yarn link te-flow",
+    "test": "npm run build && mocha --recursive __tests__/"
   },
-  "keywords": [
-    "artisin",
-    "te",
-    "javascript",
-    "stream",
-    "argument stream",
-    "flow",
-    "control",
-    "wrapper",
-    "function",
-    "functional",
-    "pipeline"
-  ],
-  "dependencies":{
-    "defclass": "0.1.0",
-    "lodash.isarray": "^4.0.0",
-    "lodash.isfunction": "^3.0.7",
-    "lodash.isobject": "^3.0.2",
-    "lodash.memoize": "^4.0.0",
-    "lodash.defaults": "^4.0.0"
+  "dependencies": {
+    "defclass": "0.2.0",
+    "lodash.defaults": "4.2.0",
+    "lodash.isfunction": "3.0.8",
+    "lodash.isobject": "3.0.2",
+    "lodash.memoize": "4.1.2"
   },
-  "devDependencies":{
-    "gulp": "^3.9.0",
-    "gulp-sequence": "^0.4.1",
-    "gulp-jade": "^1.1.0",
-    "karma": "^0.13.9",
-    "webpack": "^1.11.0",
-    "browser-sync": "^2.8.2",
-    "babel-loader": "^5.3.2",
-    "source-map-support": "^0.2.10",
-    "karma-cli": "^0.1.*",
-    "karma-firefox-launcher": "^0.1.6",
-    "karma-mocha": "^0.2.0",
-    "karma-nyan-reporter": "^0.2.2",
-    "karma-sinon-chai": "^1.0.0",
-    "karma-phantomjs-launcher": "^0.2.1",
-    "karma-sourcemap-loader": "^0.3.5",
-    "karma-webpack": "^1.7.0",
-    "karma-nyan-reporter": "^0.2.2",
-    "phantomjs": "1.9.18",
+  "devDependencies": {
+    "babel-cli": "6.24.0",
+    "babel-core": "6.24.0",
+    "babel-loader": "6.4.1",
+    "babel-preset-es2015": "6.24.0",
     "expect.js": "0.3.1",
-    "webpack-umd-external": "1.0.2",
-    "require-dir": "^0.3.0",
-    "colors": "^1.1.2",
-    "deep-merge": "1.0.0",
-    "nodemon": "1.5.0"
+    "lodash": "4.17.4",
+    "mocha": "3.2.0",
+    "webpack": "2.2.1",
+    "webpack-node-externals": "1.5.4"
   }
 }
