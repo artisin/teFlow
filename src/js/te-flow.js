@@ -1,4 +1,3 @@
-const isArray    = require('lodash.isarray');
 const isFunction = require('lodash.isfunction');
 const isObject   = require('lodash.isobject');
 const memoize    = require('lodash.memoize');
@@ -474,7 +473,7 @@ const TeFlow = defclass({
       return isObject(val);
     },
     isArr: function (val) {
-      return isArray(val);
+      return Array.isArray(val);
     },
     isUdf: function (val) {
       return val === undefined;
