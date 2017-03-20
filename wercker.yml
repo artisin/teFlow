@@ -12,5 +12,8 @@ build:
       name: install dependencies
       code: yarn install
     - script:
+      name: link package
+      code: yarn run link
+    - script:
       name: test
       code: yarn test
