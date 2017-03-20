@@ -9,11 +9,11 @@ build:
       code: |
         export YARN_CACHE=$WERCKER_CACHE_DIR/yarn
     - script:
-      name: install dependencies
-      code: yarn install
-    - script:
       name: link package
       code: yarn run link
+    - script:
+      name: install dependencies
+      code: yarn install
     - script:
       name: test
       code: yarn test
